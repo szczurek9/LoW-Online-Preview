@@ -1,0 +1,408 @@
+/* Wspólne style ekranu walki i sklepu. */
+#battle-screen,
+#shop-screen,
+#inventory-screen,
+#skin-screen {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1rem;
+    border: 1px solid var(--shop-border-color);
+    background: var(--shop-page-background);
+    border-radius: 0.75rem;
+    box-shadow: inset 0 0 0 1px var(--border-soft);
+}
+
+.battle-header,
+.stat-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.battle-header {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.battle-header h2,
+.combatant h3,
+.shop-header h2,
+.shop-section h3,
+.shop-item h4 {
+    margin: 0.125rem 0;
+    font-family: var(--font-title);
+    font-weight: 400;
+}
+
+.battle-header h2,
+.shop-header h2 {
+    font-size: 1.5rem;
+}
+
+.eyebrow,
+.combatant-label {
+    font-size: 0.875rem;
+    letter-spacing: 2px;
+    opacity: 0.8;
+}
+
+#battle-wave {
+    padding: 0.3125rem 0.5rem;
+    border: 1px solid var(--shop-border-color);
+    background: var(--shop-info-background);
+}
+
+.battle-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Auto-walka: przełącznik i prędkość w nagłówku walki. */
+.battle-auto-btn,
+.battle-auto-speed {
+    white-space: nowrap;
+}
+
+.battle-auto-btn.is-active {
+    background: var(--accent);
+    color: var(--accent-text);
+}
+
+.battle-escape-top {
+    white-space: nowrap;
+}
+
+.battle-arena {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+    gap: 0.625rem;
+}
+
+.combatant {
+    min-width: 0;
+    padding: 0.625rem;
+    border: 1px solid var(--shop-border-color);
+    background: var(--shop-card-background);
+}
+
+.combatant h3 {
+    min-height: 2.625rem;
+    font-size: 1.125rem;
+}
+
+.battle-model,
+.enemy-silhouette {
+    display: flex;
+    height: 13.75rem;
+    align-items: center;
+    justify-content: center;
+    margin: 0.375rem 0 0.625rem;
+    border: 1px solid var(--border-soft);
+    background: var(--sprite-bg);
+}
+
+.battle-model img {
+    max-width: 100%;
+    max-height: 13.75rem;
+    object-fit: contain;
+}
+
+.enemy-silhouette {
+    color: #2a3550;
+    font-size: 4.25rem;
+    text-shadow: 0 0 12px rgba(47, 172, 255, 0.8);
+}
+
+.health-bar {
+    height: 0.75rem;
+    margin: 0.3125rem 0 0.5rem;
+    overflow: hidden;
+    border: 1px solid var(--shop-border-color);
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.health-bar span {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #35c46a;
+    transition: width 180ms ease;
+}
+
+.battle-resource-bars {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.resource-label {
+    display: block;
+    margin-bottom: 0.1875rem;
+    font-size: 0.875rem;
+    opacity: 0.85;
+}
+
+.mana-bar span {
+    background: #3d9ee8;
+}
+
+.enemy-health-bar span {
+    background: #e15b61;
+}
+
+.combatant p {
+    min-height: 1.125rem;
+    margin: 0.4375rem 0 0;
+    font-size: 0.875rem;
+}
+
+#battle-player-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.battle-versus {
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+    font-family: var(--font-title);
+    font-size: 1.25rem;
+}
+
+.battle-log,
+.shop-message {
+    min-height: 1.125rem;
+    box-sizing: border-box;
+    padding: 0.5625rem;
+    border: 1px solid var(--shop-border-color);
+    background: var(--shop-info-background);
+    text-align: center;
+}
+
+.battle-log {
+    min-height: 2.375rem;
+    margin: 0.75rem 0 0.5rem;
+}
+
+.battle-log.success,
+.shop-message.success {
+    background: rgba(49, 158, 83, 0.4);
+}
+
+.battle-log.warning,
+.shop-message.warning {
+    background: rgba(187, 151, 36, 0.4);
+}
+
+.battle-log.danger,
+.shop-message.danger {
+    background: rgba(179, 48, 58, 0.42);
+}
+
+.battle-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.battle-abilities,
+.battle-potions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.ability-button,
+.potion-button {
+    display: flex;
+    min-width: 0;
+    min-height: 4.375rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    flex-direction: column;
+    text-align: center;
+}
+
+.ability-icon {
+    width: 3rem;
+    height: 3rem;
+    object-fit: contain;
+    border: 1px solid var(--shop-border-color);
+    background: var(--shop-info-background);
+}
+
+.shop-ability-icon {
+    width: 4.5rem;
+    height: 4.5rem;
+    margin: 0 auto 0.375rem;
+}
+
+.ability-mode-boei {
+    background: #c8a83d;
+}
+
+.ability-mode-chikara {
+    background: #b64343;
+}
+
+.battle-effects {
+    margin-top: 0.5rem;
+    padding: 0.4375rem;
+    border: 1px solid var(--shop-border-color);
+    background: var(--shop-info-background);
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+.secondary-button {
+    width: 100%;
+}
+
+/* Niski stan HP/many: delikatna pulsacja paska. */
+.health-bar.is-low {
+    animation: bar-low-pulse 900ms ease-in-out infinite;
+}
+
+@keyframes bar-low-pulse {
+    50% { box-shadow: 0 0 8px 1px rgba(225, 91, 97, 0.85); }
+}
+
+/* Błysk karty walczącego po otrzymaniu obrażeń. */
+.combatant.is-hit {
+    animation: combatant-hit 320ms ease;
+}
+
+@keyframes combatant-hit {
+    25% { transform: translateX(-4px); box-shadow: inset 0 0 22px rgba(225, 91, 97, 0.6); }
+    60% { transform: translateX(3px); }
+}
+
+/* Efekty jako chipy. */
+.battle-effects {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.375rem;
+}
+
+.effect-chip {
+    padding: 0.125rem 0.5rem;
+    border: 1px solid var(--shop-border-color);
+    border-radius: 999px;
+    background: var(--shop-card-background);
+}
+
+/* Historia walki. */
+.battle-history {
+    margin-top: 0.5rem;
+    border: 1px solid var(--shop-border-color);
+    border-radius: 6px;
+    background: var(--shop-info-background);
+    font-size: 0.875rem;
+}
+
+.battle-history summary {
+    padding: 0.375rem 0.5625rem;
+    cursor: pointer;
+}
+
+.battle-history ol {
+    max-height: 9.375rem;
+    margin: 0;
+    padding: 0.25rem 0.5625rem 0.5rem 1.625rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.battle-history li {
+    padding: 0.125rem 0;
+    opacity: 0.8;
+}
+
+.battle-history li:first-child {
+    opacity: 1;
+    font-weight: 700;
+}
+
+.battle-history li.danger { color: var(--bad); }
+.battle-history li.success { color: var(--good); }
+.battle-history li.warning { color: var(--warn); }
+
+/* Spadające liczby obrażeń (-123), leczenia (+45) i napis CRIT!. */
+.battle-model {
+    position: relative;
+}
+
+.fx-float {
+    position: absolute;
+    top: 0.375rem;
+    left: 50%;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    white-space: nowrap;
+    font-family: var(--font-body);
+    line-height: 1;
+    animation: fx-fall 1400ms cubic-bezier(0.3, 0.1, 0.6, 1) both;
+}
+
+.fx-float .fx-num {
+    font-size: 1.375rem;
+    -webkit-text-stroke: 3px #000;
+    paint-order: stroke fill;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.fx-float .fx-label {
+    margin-bottom: 0.125rem;
+    font-size: 0.875rem;
+    letter-spacing: 1px;
+    color: #ffd84a;
+    -webkit-text-stroke: 2px #000;
+    paint-order: stroke fill;
+}
+
+.fx-damage .fx-num { color: #ff5a5f; }
+.fx-heal .fx-num { color: #4be07f; }
+.fx-crit .fx-num { color: #ff8a3d; font-size: 1.75rem; }
+
+@keyframes fx-fall {
+    0% { opacity: 0; transform: translate(calc(-50% + var(--fx-x, 0px)), -26px) scale(0.5); }
+    14% { opacity: 1; transform: translate(calc(-50% + var(--fx-x, 0px)), -4px) scale(1.3); }
+    30% { opacity: 1; transform: translate(calc(-50% + var(--fx-x, 0px)), 0) scale(1); }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--fx-x, 0px)), 60px) scale(0.95); }
+}
+
+@media (max-width: 520px) {
+    .fx-float .fx-num { font-size: 1.125rem; }
+    .fx-crit .fx-num { font-size: 1.4375rem; }
+}
+
+/* Ograniczenie ruchu: liczby tylko się pojawiają i zanikają, bez spadania. */
+@media (prefers-reduced-motion: reduce) {
+    .fx-float {
+        animation: fx-fade 1200ms ease both !important;
+        transform: translateX(calc(-50% + var(--fx-x, 0px)));
+    }
+
+    @keyframes fx-fade {
+        0%, 70% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+}
+
+/* Tarcze na pasku zdrowia gracza (rysowane w battleUIRender.js) */
+.health-bar { position: relative; }
+.health-bar .shield-seg { position: absolute; top: 0; bottom: 0; display: block; pointer-events: none; }
+.health-bar .shield-all { background: #dfe2e8; }
+.health-bar .shield-physical { background: #f3a6b6; }
+.health-bar .shield-magic { background: #a8c7ff; }

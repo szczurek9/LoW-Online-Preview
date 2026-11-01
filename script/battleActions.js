@@ -1,0 +1,576 @@
+// Player/enemy turn resolution and ability/potion effects.
+(function () {
+  const M = window.BattleMath;
+  const S = window.BattleState;
+
+  // Pojedynki 1v1 (duelEngine.js) podstawiają tu własną "turę przeciwnika": zamiast kontrataku wroga
+  // liczą tylko efekty w czasie (zatrucie, pnącza) i ogłuszenie. Poza pojedynkami zawsze null.
+  let opponentTurnOverride = null;
+  function setOpponentTurn(fn) {
+    opponentTurnOverride = typeof fn === "function" ? fn : null;
+  }
+
+  // ---- Przedmioty z efektami (Tank / Wojownik) -------------------------------
+  function equippedAdItems() {
+    return (window.player.adItemInventory || []).filter((item) => item.equipped);
+  }
+
+  // Podpalenie: obrażenia nieuchronne na turę = 10 + 13% AD + 4% AP.
+  function burnDamagePerTurn() {
+    return Math.floor(10 + window.player.ad * 0.13 + M.effectiveAbilityPower() * 0.04);
+  }
+
+  // Tarcze pochłaniają obrażenia zanim ucierpi zdrowie. Tarcza fizyczna blokuje tylko część fizyczną,
+  // magiczna tylko magiczną, zwykła ("all") obie. Zwraca to, co zostało do zadania, i tarcze po trafieniu.
+  function absorbWithShields(shields, physicalDamage, magicDamage) {
+    let physical = physicalDamage;
+    let magic = magicDamage;
+    let absorbed = 0;
+    let overloadBlocked = 0;
+    const left = (shields || []).map((shield) => {
+      let amount = shield.amount;
+      if (shield.type !== "magic" && physical > 0 && amount > 0) {
+        const part = Math.min(amount, physical);
+        physical -= part; amount -= part; absorbed += part;
+        if (shield.overload) overloadBlocked += part;
+      }
+      if (shield.type !== "physical" && magic > 0 && amount > 0) {
+        const part = Math.min(amount, magic);
+        magic -= part; amount -= part; absorbed += part;
+        if (shield.overload) overloadBlocked += part;
+      }
+      return { ...shield, amount };
+    }).filter((shield) => shield.amount > 0);
+    return { physical, magic, absorbed, overloadBlocked, shields: left };
+  }
+
+  // Efekty przedmiotów reagujące na otrzymane trafienie: Pochłonięcie (Pancerz Golema) i Overload (Pas runiczny).
+  // `player` to gracz, który OBERWAŁ (w pojedynku to nie zawsze window.player). Zwraca nowe liczniki i tarcze,
+  // a przy Golemie od razu podnosi maks. HP gracza (trwale, bonus nigdy nie jest odejmowany).
+  function registerHit(state, player, hit) {
+    const owned = (player.adItemInventory || []).filter((item) => item.equipped);
+    const hitsTaken = (state.hitsTaken || 0) + 1;
+    const physicalHits = (state.physicalHitsTaken || 0) + (hit.physicalTaken > 0 ? 1 : 0);
+    const magicHits = (state.magicHitsTaken || 0) + (hit.magicTaken > 0 ? 1 : 0);
+    let shields = hit.shieldResult.shields;
+    let overloadBonus = state.overloadBonus || 0;
+    const belt = owned.find((item) => item.id === "runicBelt");
+    if (belt) {
+      overloadBonus += Math.floor(hit.shieldResult.overloadBlocked * belt.overloadConvertPercent / 100);
+      // turns: 2, bo odliczanie tur następuje zaraz po turze wroga, a tarcza ma osłonić jego NASTĘPNY atak (czyli 1 turę).
+      if (hit.magicTaken > 0 && magicHits % belt.overloadEvery === 0) {
+        shields = [...shields, { type: "magic", amount: Math.floor(belt.overloadMagicBase + hit.magicTaken * belt.overloadMagicPercent / 100), turns: 2, overload: true }];
+      }
+      if (hit.physicalTaken > 0 && physicalHits % belt.overloadEvery === 0) {
+        shields = [...shields, { type: "physical", amount: Math.floor(belt.overloadPhysicalBase + hit.physicalTaken * belt.overloadPhysicalPercent / 100), turns: 2, overload: true }];
+      }
+    }
+    let golemGain = 0;
+    const golem = owned.find((item) => item.id === "golemArmor");
+    if (golem && hitsTaken % golem.absorbEveryHits === 0 && hit.finalDamage > 0) {
+      golemGain = Math.floor(hit.finalDamage * golem.absorbPercent / 100);
+      if (golemGain > 0) {
+        player.maxHealthPoints += golemGain;
+        player.healthPoints = Math.min(player.maxHealthPoints, player.healthPoints + golemGain);
+        player.golemBonus = (player.golemBonus || 0) + golemGain;   // tylko licznik
+      }
+    }
+    return { shields, hitsTaken, physicalHitsTaken: physicalHits, magicHitsTaken: magicHits, overloadBonus, golemGain };
+  }
+
+  function playerAttack(state, options = {}) {
+    const player = window.player;
+    const enemy = S.enemyOf(state);
+    // Kieł Węża's poison reduces the enemy's dodge chance by 10% (min. 0%),
+    // not less likely to attack — that reduction lives in enemyTurn's own
+    // attack-chance calc, not here.
+    const baseDodge = enemy.dodgeChance !== undefined ? enemy.dodgeChance : (100 - (enemy.playerAttackChance ?? 100));
+    const effectiveDodge = Math.max(0, baseDodge - (state.effects.poison > 0 ? 10 : 0));
+    const dodgeReduction = baseDodge - effectiveDodge;
+    const accuracyBonus = (state.effects.accuracy || 0) + (state.effects.potionAccuracy || 0);
+    const accuracy = M.clamp((enemy.playerAttackChance ?? (100 - enemy.dodgeChance)) + dodgeReduction + player.bonusAccuracy + M.weaponAccuracyBonus() + accuracyBonus, 0, 100);
+    const nextWeaponAttackCount = (state.weaponAttackCount || 0) + 1;
+    const fourthJhinAttack = player.weaponId === "jhinPistol" && nextWeaponAttackCount % 4 === 0;
+    const nextJhinPool = player.weaponId === "jhinPistol" && fourthJhinAttack
+      ? (state.jhinPool || 0) + Math.floor(44 + player.ad * 0.044)
+      : state.jhinPool || 0;
+    // Pistolet Jhina auto-discharges its accumulated pool every 16 attacks
+    // (four pool-building procs), instead of requiring the manual weapon
+    // ability — jhinAttackCount tracks this independently of the shared
+    // weaponAttackCount so it always resets cleanly per wave.
+    const nextJhinAttackCount = player.weaponId === "jhinPistol" ? (state.jhinAttackCount || 0) + 1 : 0;
+    const nextYamatoStacks = player.weaponId === "yamato" && nextWeaponAttackCount % 6 === 0
+      ? (state.yamatoJudgementStacks || 0) + 1
+      : state.yamatoJudgementStacks || 0;
+    const equippedAd = (player.adItemInventory || []).filter((item) => item.equipped);
+    const hasAdItem = (id) => equippedAd.some((item) => item.id === id);
+    const snakePoisonAttack = hasAdItem("snakeFang") && nextWeaponAttackCount % 5 === 0;
+    // Łucznik: "rhythm" = atak z Rytmu Wojny (magiczny, bonus z AD/AP),
+    // "focus" = atak Q wzmocniony Nieokiełznanym Skupieniem (nie może chybić).
+    const archer = M.classId() === "archer";
+    const rhythm = archer && Boolean(options.rhythm);
+    const focus = archer && Boolean(options.focusStrike);
+
+    if (!fourthJhinAttack && !focus && M.roll() >= accuracy) {
+      const missMessage = "Przeciwnik uniknął twojego ataku!";
+      return { ...state, enemyDefeated: false, heal: 0, missed: true, playerMessage: missMessage, message: missMessage };
+    }
+
+    let multiplier = 1;
+    if (M.classId() === "assassin") multiplier += 0.10;
+    if (M.classId() === "samurai") multiplier += 0.15;
+    // Pasywka Samuraja: broń biała (Melee) = +10% obrażeń zwykłego ataku (lifesteal +5% jest w M.damageHeal).
+    multiplier += M.samuraiMeleeDamageBonus();
+    // Pasywka Łucznika: +10% obrażeń zwykłego ataku z broni dystansowej (Ranged).
+    if (archer && player.weaponType === "R") multiplier += 0.10;
+    let weaponDamage = Math.max(1, Math.floor((player.weaponBaseDamage || player.weaponDmg) + player.ad * (player.weaponAdScaling || 0)));
+    // Q Łucznika: skalowanie z AP zamiast AD (patrz M.archerBasicWeaponDamage).
+    if (archer && !rhythm) weaponDamage = M.archerBasicWeaponDamage();
+    // E Łucznika: zwykły atak + bonus 145% AD (bez przedmiotów AD: 50 + 40% AP), całość magiczna.
+    if (rhythm) weaponDamage += M.hasEquippedAdItems() ? Math.floor(player.ad * 1.45) : Math.floor(50 + M.effectiveAbilityPower() * 0.40);
+    if (M.classId() === "tank" && weaponDamage > 500) multiplier -= state.effects.ironTaunt ? 0.20 : 0.25;
+    if (state.senMode === "chikara") multiplier += 0.075;
+
+    // Samurai's "Sen no Kata" defensive stance: every third attack while in
+    // Bōei mode is a weak (10% damage) strike that also stuns the enemy.
+    let senBōeiAttack = false;
+    let nextSenAttackCount = state.senAttackCount;
+    if (M.classId() === "samurai" && state.senMode === "boei") {
+      nextSenAttackCount += 1;
+      if (nextSenAttackCount >= 3) {
+        senBōeiAttack = true;
+        nextSenAttackCount = 0;
+      }
+    }
+
+    const naturalCritical = M.roll() < player.critChance;
+    const jhinFourCrit = player.weaponId === "jhinPistol" && M.roll() < 4;
+    const critical = Boolean(options.forceCritical) || focus || naturalCritical || jhinFourCrit;
+    const superCritical = Boolean(options.forceCritical && naturalCritical && !focus);
+    if (critical) {
+      const baseCritMultiplier = M.classId() === "samurai" ? 1.2 : 1.5;
+      multiplier *= jhinFourCrit ? 4 : (options.critMultiplierOverride ?? (focus ? 2 : (superCritical ? 2.25 : baseCritMultiplier)));
+    }
+    if (hasAdItem("shadowArrows") && M.classId() !== "samurai" && critical && nextWeaponAttackCount % 2 === 0) multiplier *= 1.8;
+    if (hasAdItem("assassinCloakAd") && state.enemyHealth <= state.enemyMaxHealth * 0.30) multiplier *= 1.2;
+
+    const wolfCount = equippedAd.filter((item) => item.id === "wolfGrip").length;
+    const rawDamage = Math.max(1, Math.floor((weaponDamage * multiplier + wolfCount * (8 + player.ad * 0.12)) * (senBōeiAttack ? 0.1 : 1)));
+    // Jhin's every-4th-attack bonus is physical (it comes off the gun
+    // itself), while Yamato's bonus is genuine magic damage from its AP.
+    let extraPhysicalDamage = 0;
+    let extraMagicDamage = 0;
+    if (player.weaponId === "jhinPistol" && fourthJhinAttack) extraPhysicalDamage = Math.floor(player.ad * 0.44 * (critical ? 1.2 : 1));
+    if (player.weaponId === "yamato") extraMagicDamage = Math.floor(120 + player.abilityPower * 0.50);
+    const hammer = equippedAd.find((item) => item.id === "giantsHammer");
+    if (hammer) extraPhysicalDamage += Math.floor(player.maxHealthPoints * hammer.maxHealthDamagePercent / 100);
+    if ((state.overloadBonus || 0) > 0) extraPhysicalDamage += state.overloadBonus;   // Overload: zużywane przy trafieniu
+    const primalReady = M.classId() === "assassin" && player.overkillPool >= state.enemyMaxHealth * 0.5;
+    const armorPen = player.armorPenetration;
+    const damage = rhythm
+      ? M.magicDamage(rawDamage, state.enemyMagicResistance, player.magicPenetration)
+      : M.physicalDamage(rawDamage, state.enemyArmor * (primalReady ? 0.2 : 1), armorPen, player.armorPenetrationPercent || 0);
+    let result = M.applyDamageToEnemy(state, damage);
+    if (hasAdItem("nightPower") && nextWeaponAttackCount % 5 === 0 && !result.state.enemyDefeated) {
+      const trueDamage = Math.floor(10 + player.ad * 0.10);
+      const trueResult = M.applyDamageToEnemy(result.state, trueDamage);
+      result = { ...trueResult, dealt: result.dealt + trueResult.dealt, overkill: result.overkill + trueResult.overkill };
+    }
+    if (extraPhysicalDamage > 0 && !result.state.enemyDefeated) {
+      const physicalResult = M.applyDamageToEnemy(result.state, M.physicalDamage(extraPhysicalDamage, result.state.enemyArmor * (primalReady ? 0.2 : 1), armorPen, player.armorPenetrationPercent || 0));
+      result = { ...physicalResult, dealt: result.dealt + physicalResult.dealt, overkill: result.overkill + physicalResult.overkill };
+    }
+    if (extraMagicDamage > 0 && !result.state.enemyDefeated) {
+      const magicResult = M.applyDamageToEnemy(result.state, M.magicDamage(extraMagicDamage, result.state.enemyMagicResistance, player.magicPenetration));
+      result = { ...magicResult, dealt: result.dealt + magicResult.dealt, overkill: result.overkill + magicResult.overkill };
+    }
+
+    let jhinAutoReleaseDamage = 0;
+    let finalJhinPool = nextJhinPool;
+    let finalJhinAttackCount = nextJhinAttackCount;
+    if (player.weaponId === "jhinPistol" && nextJhinAttackCount >= 16) {
+      finalJhinAttackCount = 0;
+      if (finalJhinPool > 0 && !result.state.enemyDefeated) {
+        const autoResult = M.applyDamageToEnemy(result.state, M.physicalDamage(finalJhinPool, result.state.enemyArmor, armorPen, player.armorPenetrationPercent || 0), { noOverkill: true });
+        result = { ...autoResult, dealt: result.dealt + autoResult.dealt, overkill: result.overkill + autoResult.overkill };
+        jhinAutoReleaseDamage = autoResult.dealt;
+      }
+      finalJhinPool = 0;
+    }
+    // Łucznik: E leczy tylko z magicznego lifestealu; Q bez przedmiotów AD
+    // leczy z magicznego lifestealu z 50% skutecznością zamiast fizycznego.
+    let heal;
+    if (rhythm) heal = M.damageHeal(result.dealt, true);
+    else if (archer && !M.hasEquippedAdItems()) heal = M.damageHeal(result.dealt, true, 0.5);
+    else heal = M.damageHeal(result.dealt, false);
+
+    const cleaver = equippedAd.find((item) => item.id === "fireCleaver");
+    if (cleaver && (state.effects.killLifesteal || 0) > 0) {
+      const extraHeal = Math.floor(result.dealt * cleaver.killLifestealPercent / 100);
+      player.healthPoints = M.clamp(player.healthPoints + extraHeal, 0, player.maxHealthPoints);
+      heal += extraHeal;
+    }
+
+    const overkillHeal = M.classId() === "assassin" && player.overkillPool > 0
+      ? Math.floor(player.overkillPool * (5 + Math.floor(player.armorPenetration / 0.7) + Math.floor(player.armorPoints / 0.8)) / 100)
+      : 0;
+    if (overkillHeal > 0) player.healthPoints = M.clamp(player.healthPoints + overkillHeal, 0, player.maxHealthPoints);
+    if (primalReady) player.overkillPool = 0;
+
+    const starBreaker = equippedAd.find((item) => item.id === "starBreaker");
+    const nextEffects = { ...result.state.effects };
+    if (snakePoisonAttack) nextEffects.poison = 2;
+    let burnText = "";
+    if (cleaver && nextWeaponAttackCount % cleaver.burnEveryAttacks === 0 && !result.state.enemyDefeated) {
+      nextEffects.burn = cleaver.burnTurns;
+      nextEffects.burnDamage = burnDamagePerTurn();
+      burnText = " Podpalasz przeciwnika!";
+    }
+    if (cleaver && result.state.enemyDefeated) nextEffects.killLifesteal = cleaver.killLifestealTurns;
+    let nextShields = state.shields || [];
+    let shieldText = "";
+    if (starBreaker && nextWeaponAttackCount % starBreaker.shieldEveryAttacks === 0) {
+      const amount = Math.floor(player.ad * starBreaker.shieldAdPercent / 100);
+      if (amount > 0) {
+        nextShields = [...nextShields, { type: "all", amount, turns: starBreaker.shieldTurns }];
+        shieldText = ` Gwiezdny pył daje ci tarczę (${amount}).`;
+      }
+    }
+
+    const playerMessage = `Zadałeś ${result.dealt} ${rhythm ? "obrażeń magicznych" : "obrażeń"}!${focus ? " Nieokiełznane Skupienie!" : ""}`;
+    const nextState = {
+      ...result.state,
+      weaponAttackCount: nextWeaponAttackCount,
+      jhinPool: finalJhinPool,
+      jhinAttackCount: finalJhinAttackCount,
+      yamatoJudgementStacks: nextYamatoStacks,
+      effects: nextEffects,
+      shields: nextShields,
+      overloadBonus: 0,
+      senAttackCount: nextSenAttackCount,
+      heal: heal + overkillHeal,
+      critical,
+      superCritical,
+      overkill: result.overkill,
+      overkillArmorBreak: primalReady,
+      missed: false,   // bez tego zostawała stara wartość z poprzedniego chybienia
+      playerMessage: `${playerMessage}${fourthJhinAttack ? " Czwarty atak Jhina!" : ""}${jhinAutoReleaseDamage > 0 ? ` Pula Pistoletu Jhina uwalnia się automatycznie, zadając ${jhinAutoReleaseDamage} obrażeń!` : ""}${burnText}${shieldText}`,
+      message: playerMessage,
+    };
+    if (senBōeiAttack) nextState.effects = { ...nextState.effects, stun: 1 };
+    return nextState;
+  }
+
+  function enemyTurn(state) {
+    const player = window.player;
+    const enemy = S.enemyOf(state);
+    if (state.enemyDefeated) return state;
+
+    let next = state;
+    let effectMessage = "";
+
+    if (state.effects.poison > 0) {
+      const poisonDamage = M.magicDamage(30 + player.ad * 0.20, state.enemyMagicResistance, player.magicPenetration);
+      const poisonResult = M.applyDamageToEnemy(next, poisonDamage);
+      next = poisonResult.state;
+      effectMessage += ` Zatrucie zadaje ${poisonResult.dealt} magicznych obrażeń.`;
+      if (next.enemyDefeated) return { ...next, enemyMessage: effectMessage.trim(), message: effectMessage.trim() };
+    }
+    if (state.effects.burn > 0) {
+      const burnResult = M.applyDamageToEnemy(next, state.effects.burnDamage || 0, { noOverkill: true });
+      next = burnResult.state;
+      effectMessage += ` Podpalenie zadaje ${burnResult.dealt} obrażeń nieuchronnych.`;
+      if (next.enemyDefeated) return { ...next, enemyMessage: effectMessage.trim(), message: effectMessage.trim() };
+    }
+    if (state.effects.vines > 0) {
+      const vineDamage = M.magicDamage(10 + M.effectiveAbilityPower() * 0.10, state.enemyMagicResistance, player.magicPenetration);
+      const vineResult = M.applyDamageToEnemy(next, vineDamage);
+      next = vineResult.state;
+      effectMessage = ` Pnącza zadają ${vineResult.dealt} magicznych obrażeń.`;
+      if (next.enemyDefeated) return { ...next, message: effectMessage.trim() };
+    }
+
+    if (next.effects.stun > 0) {
+      const stunMessage = `Przeciwnik jest ogłuszony!${effectMessage}`;
+      return { ...next, enemyMessage: stunMessage, message: stunMessage };
+    }
+
+    // Łucznik: Rytm Wojny daje gwarantowany unik następnego ataku przeciwnika
+    // (ogłuszony wróg nie atakuje, więc unik czeka do jego pierwszego ataku).
+    if (next.effects.evadeNext) {
+      const effectsAfterEvade = { ...next.effects };
+      delete effectsAfterEvade.evadeNext;
+      const evadeMessage = `Uniknąłeś ataku przeciwnika dzięki Rytmowi Wojny!${effectMessage}`;
+      return { ...next, effects: effectsAfterEvade, enemyMessage: evadeMessage, message: evadeMessage };
+    }
+
+    const chance = M.clamp((next.enemyAttackChance || enemy.attackChance) + (next.effects.enemyAccuracy || 0) - player.bonusDodge, 0, 100);
+    if (M.roll() >= chance) {
+      const missMessage = `Przeciwnik nie trafił!${effectMessage}`;
+      return { ...next, enemyMessage: missMessage, message: missMessage };
+    }
+
+    const critical = M.roll() < enemy.critChance;
+    let rawDamage = critical ? Math.floor(next.enemyDamage * 1.5) : next.enemyDamage;
+    if (next.effects.mushin) rawDamage = Math.floor(rawDamage * 0.7);
+    if (next.senMode === "chikara") rawDamage = Math.floor(rawDamage * 1.045);
+
+    const baseArmor = player.armorPoints + player.bonusArmor + (next.effects.rageArmor || 0);
+    const armor = baseArmor * (1 + (next.effects.bastionArmor || 0) / 100);
+    // Podział obrażeń wroga: magicDamagePercent (domyślnie 0 = same fizyczne) idzie przez odporność magiczną, reszta przez pancerz.
+    const magicShare = M.clamp(enemy.magicDamagePercent || 0, 0, 100) / 100;
+    const magicRaw = Math.floor(rawDamage * magicShare);
+    const physicalRaw = rawDamage - magicRaw;
+    const physicalTaken = physicalRaw > 0 ? M.physicalDamage(physicalRaw, armor, enemy.armorPenetration || 0) : 0;
+    const magicTaken = magicRaw > 0 ? M.magicDamage(magicRaw, player.magicResistance, enemy.magicPenetration || 0) : 0;
+    // Tarcze (Gwiezdny pył, Overload) pochłaniają obrażenia przed zdrowiem.
+    const shieldResult = absorbWithShields(next.shields, physicalTaken, magicTaken);
+    const unmitigatedDamage = shieldResult.physical + shieldResult.magic;
+
+    // "Deadly Mirror" blocks a fraction of the hit and reflects it back; if
+    // the unmitigated hit would have been fatal, it blocks almost all of it
+    // and reflects a smaller share, at the cost of consuming the effect.
+    const mirrorActive = Boolean(next.effects.mirror);
+    const mirrorFatal = mirrorActive && unmitigatedDamage >= player.healthPoints;
+    const blockedDamage = mirrorFatal ? Math.floor(unmitigatedDamage * 0.99) : mirrorActive ? Math.floor(unmitigatedDamage * 0.10) : 0;
+    const finalDamage = unmitigatedDamage > 0 ? Math.max(1, unmitigatedDamage - blockedDamage) : 0;
+    const hpBeforeHit = player.healthPoints;
+    player.healthPoints = M.clamp(player.healthPoints - finalDamage, 0, player.maxHealthPoints);
+
+    const rage = next.rage + finalDamage;
+    const physicalFinal = unmitigatedDamage > 0 ? Math.round(finalDamage * shieldResult.physical / unmitigatedDamage) : 0;
+    const magicFinal = finalDamage - physicalFinal;
+    const splitText = shieldResult.magic > 0 && finalDamage > 0 ? ` (fizyczne: ${physicalFinal}, magiczne: ${magicFinal})` : "";
+    const shieldText = shieldResult.absorbed > 0 ? ` Tarcza pochłonęła ${shieldResult.absorbed}.` : "";
+    const enemyMessage = `Przeciwnik zadał Ci ${finalDamage} obrażeń${splitText}!${shieldText}${effectMessage}`;
+    let nextState = {
+      ...next,
+      enemyCritical: critical,
+      // Dane dla interfejsu (spadające liczby): wartość trafienia i faktycznie utracone HP.
+      enemyHit: { damage: finalDamage, applied: hpBeforeHit - player.healthPoints, physical: physicalFinal, magic: magicFinal },
+      rage,
+      arenaDamageTaken: (next.arenaDamageTaken || 0) + finalDamage,
+      enemyMessage,
+      message: enemyMessage,
+    };
+
+    // Efekty przedmiotów reagujące na otrzymane trafienie (Golem, Pas runiczny) — wspólne z pojedynkami.
+    const hitPatch = registerHit(next, player, { physicalTaken, magicTaken, shieldResult, finalDamage });
+    nextState.shields = hitPatch.shields;
+    nextState.hitsTaken = hitPatch.hitsTaken;
+    nextState.physicalHitsTaken = hitPatch.physicalHitsTaken;
+    nextState.magicHitsTaken = hitPatch.magicHitsTaken;
+    nextState.overloadBonus = hitPatch.overloadBonus;
+    if (hitPatch.golemGain > 0) nextState.message += ` Pochłonięcie: +${hitPatch.golemGain} maks. HP.`;
+
+    if (mirrorActive) {
+      const reflected = Math.floor(blockedDamage * (mirrorFatal ? 0.05 : 0.20));
+      nextState.enemyHealth = Math.max(0, nextState.enemyHealth - reflected);
+      nextState.enemyDefeated = nextState.enemyHealth <= 0;
+      if (mirrorFatal) player.healthPoints = M.clamp(player.healthPoints + Math.floor(blockedDamage * 0.15), 0, player.maxHealthPoints);
+      delete nextState.effects.mirror;
+    }
+
+    // Pancerz z Gniewu działa tylko na jeden atak wroga: kasujemy poprzedni PRZED ewentualnym
+    // ustawieniem nowego (wcześniej kasowanie szło po ustawieniu i premia znikała od razu).
+    if (next.effects.rageArmor) delete nextState.effects.rageArmor;
+
+    // Tank's passive: once accumulated rage crosses a threshold, it
+    // automatically detonates for bonus true-ish damage and self-heal.
+    if (M.classId() === "tank" && rage >= M.currentWeaponDamage() * 1.5) {
+      const rageDamage = M.physicalDamage(rage * 0.70, nextState.enemyArmor, player.armorPenetration);
+      nextState.rageBurst = Math.max(nextState.rageBurst || 0, Math.min(rageDamage, nextState.enemyHealth));   // dla osiągnięć
+      nextState.enemyHealth = Math.max(0, nextState.enemyHealth - rageDamage);
+      player.healthPoints = M.clamp(player.healthPoints + Math.floor(rage * 0.35), 0, player.maxHealthPoints);
+      nextState.effects.rageArmor = Math.floor(rage * 0.05);
+      nextState.rage = 0;
+      nextState.enemyDefeated = nextState.enemyHealth <= 0;
+      nextState.message += ` Skumulowany Gniew automatycznie zadaje ${rageDamage} obrażeń i leczy ${Math.floor(rage * 0.35)} HP.`;
+    }
+    return nextState;
+  }
+
+  // Wraps up a player action (basic attack or ability): records spell-cast
+  // stacks if relevant, regenerates mana, lets the enemy respond, ticks
+  // cooldowns/effects, and applies the ability's own cooldown if any.
+  //
+  // enemyTurn() always overwrites `.message` with its own text (counter-
+  // attack, stun, dodge...). Without keeping the action's own message under
+  // its own key, that overwrite would silently erase it whenever the enemy
+  // survives — exactly what was happening to every damage-dealing ability.
+  function finishPlayerAction(state, message, cooldownAbility, isSpell = false) {
+    let next = { ...state, arenaTurns: (state.arenaTurns || 0) + 1, message, actionMessage: message };
+    if (isSpell) M.recordSpellCast();
+    M.regenMana();
+    const hpBeforeEnemyTurn = window.player.healthPoints;
+    next = (opponentTurnOverride || enemyTurn)(next);
+    // Napierśnik Lasu (Roślinna Witalność): co N tur leczy % maks. HP + % obrażeń otrzymanych w tej turze (za każdą sztukę).
+    const forests = equippedAdItems().filter((item) => item.id === "chestplateOfTheForest");
+    if (forests.length > 0 && !next.enemyDefeated && window.player.healthPoints > 0 && next.arenaTurns % forests[0].regenEveryTurns === 0) {
+      // W pojedynku wróg nie bije w tej akcji, więc obrażenia od ostatniej tury gracza zbiera silnik pojedynków (damageTakenSinceTurn).
+      const taken = Math.max(0, hpBeforeEnemyTurn - window.player.healthPoints, next.damageTakenSinceTurn || 0);
+      const healed = forests.reduce((sum, item) => sum + Math.floor(window.player.maxHealthPoints * item.regenMaxHealthPercent / 100 + taken * item.regenDamagePercent / 100), 0);
+      window.player.healthPoints = M.clamp(window.player.healthPoints + healed, 0, window.player.maxHealthPoints);
+      next = { ...next, message: `${next.message} Roślinna Witalność leczy ${healed} HP.` };
+    }
+    if (next.damageTakenSinceTurn) next = { ...next, damageTakenSinceTurn: 0 };   // nowa tura: licznik od zera
+    next = S.tickCooldowns(next);
+    if (cooldownAbility) next = S.setCooldown(next, cooldownAbility, M.effectiveCooldown(cooldownAbility));
+    if (!next.enemyDefeated && next.message !== next.actionMessage) {
+      next.message = `${next.actionMessage} ${next.message}`;
+    }
+    return next;
+  }
+
+  function useAbility(state, abilityId) {
+    const ability = M.abilitiesForPlayer().find((item) => item.id === abilityId);
+    if (!ability) return { ...state, message: "Nieznana umiejętność." };
+    if (state.cooldowns[ability.id] > 0) return { ...state, message: `Umiejętność gotowa za ${state.cooldowns[ability.id]} tur.` };
+
+    if (ability.id === "senNoKata") {
+      const mode = state.senMode === "boei" ? "chikara" : "boei";
+      return { ...state, senMode: mode, message: `Sen no Kata: ${mode === "boei" ? "Bōei" : "Chikara"}.` };
+    }
+
+    // Łucznik: Nieokiełznane Skupienie nie zużywa tury — płaci manę i startuje
+    // cooldown od razu, a znacznik czeka na następny atak podstawowy (Q).
+    if (ability.id === "absoluteFocus") {
+      if (state.focusMark) return { ...state, message: "Przeciwnik jest już oznaczony." };
+      if (!M.payMana(window.player, ability.cost)) return { ...state, message: "Za mało many." };
+      // +1, bo ta umiejętność nie zużywa tury: tuż po niej gracz robi Q, a odliczanie po Q zjadłoby jedną turę cooldownu.
+      // Zwykłe umiejętności dostają cooldown już PO odliczeniu w tej samej akcji, więc W musi dostać o 1 więcej, żeby
+      // blokowała tyle samo tur co one (bez tego redukcja cooldownu pozwalała na W-Q co turę).
+      const marked = S.setCooldown({ ...state, focusMark: true }, ability, M.effectiveCooldown(ability) + 1);
+      return { ...marked, message: "Nieokiełznane Skupienie: następny atak (Q) będzie gwarantowanym krytykiem x2." };
+    }
+
+    if (!M.payMana(window.player, ability.cost)) return { ...state, message: "Za mało many." };
+
+    let next = state;
+    let message = `${ability.name} aktywowane.`;
+    const ap = M.effectiveAbilityPower();
+
+    if (ability.id === "primalStrike") {
+      next = { ...state, guaranteedCrit: true };
+    } else if (ability.id === "undodgeableSpeed") {
+      next = { ...state, effects: { ...state.effects, accuracy: 25, accuracyTurns: 3, enemyAccuracy: -30, enemyAccuracyTurns: 3 } };
+    } else if (ability.id === "overkillRelease") {
+      if (window.player.overkillPool <= 0) {
+        window.player.manaPoints += ability.cost;
+        return { ...state, message: "Nie posiadasz zgromadzonego Overkill." };
+      }
+      const damage = M.physicalDamage(window.player.overkillPool, state.enemyArmor * 0.2, window.player.armorPenetration);
+      const result = M.applyDamageToEnemy(state, damage);
+      next = result.state;
+      window.player.overkillPool = 0;
+      message = `Overkill Release zadaje ${result.dealt} obrażeń, ignorując 80% pancerza wroga.`;
+    } else if (ability.id === "stormBreeze" || ability.id === "starStrike") {
+      const raw = ability.id === "stormBreeze" ? 15 + ap * 0.25 : 60 + ap * (ability.apScaling ?? 0.9); // apScaling: nadpisanie z tabeli pojedynków
+      const result = M.applyDamageToEnemy(state, M.magicDamage(raw, state.enemyMagicResistance, window.player.magicPenetration));
+      next = result.state;
+      message = `${ability.name} zadaje ${result.dealt} magicznych obrażeń.`;
+      M.damageHeal(result.dealt, true);
+    } else if (ability.id === "deadlyVines") {
+      next = { ...state, effects: { ...state.effects, stun: 3, vines: 3 } };
+    } else if (ability.id === "deadlyMirror") {
+      next = { ...state, effects: { ...state.effects, mirror: true } };
+    } else if (ability.id === "stoneBastion") {
+      next = { ...state, effects: { ...state.effects, stun: 2, bastionTurns: 5, bastionArmor: 0 } };
+    } else if (ability.id === "accumulatedRage") {
+      const damage = M.magicDamage(state.rage * 0.25, state.enemyMagicResistance, window.player.magicPenetration);
+      const result = M.applyDamageToEnemy(state, damage);
+      next = result.state;
+      window.player.healthPoints = M.clamp(window.player.healthPoints + Math.floor(state.rage * 0.3), 0, window.player.maxHealthPoints);
+      next.rage = 0;
+      next.rageBurst = Math.max(next.rageBurst || 0, result.dealt);   // dla osiągnięć
+      message = `Skumulowany Gniew zadaje ${result.dealt} magicznych obrażeń.`;
+    } else if (ability.id === "ironTaunt") {
+      next = { ...state, effects: { ...state.effects, ironTaunt: 2, accuracy: 25, accuracyTurns: 2 } };
+    } else if (ability.id === "mushin") {
+      const healPercent = Math.min(0.10, 0.03 + window.player.armorPenetration * 0.001);
+      const heal = Math.floor(window.player.maxHealthPoints * healPercent);
+      window.player.healthPoints = M.clamp(window.player.healthPoints + heal, 0, window.player.maxHealthPoints);
+      next = { ...state, effects: { ...state.effects, mushin: 3 } };
+      message = `Mushin przywraca ${heal} HP.`;
+    } else if (ability.id === "rhythmOfWar") {
+      next = playerAttack(state, { rhythm: true });
+      // Unik następnego ataku wroga przysługuje także wtedy, gdy sam atak chybił.
+      next = { ...next, effects: { ...next.effects, evadeNext: 1 } };
+      message = next.missed
+        ? "Rytm Wojny nie trafił, ale unikniesz następnego ataku przeciwnika."
+        : `Rytm Wojny! ${next.playerMessage}${next.critical ? " KRYTYK!" : ""} Unikniesz następnego ataku przeciwnika.`;
+    } else if (ability.id === "frostArrow") {
+      const raw = 100 + ap * 0.85 + window.player.ad * 1.07;
+      const result = M.applyDamageToEnemy(state, M.magicDamage(raw, state.enemyMagicResistance, window.player.magicPenetration));
+      next = result.state;
+      if (!next.enemyDefeated) next = { ...next, effects: { ...next.effects, stun: 3 } };
+      M.damageHeal(result.dealt, true);
+      message = `Strzała Mrozu zadaje ${result.dealt} magicznych obrażeń${next.enemyDefeated ? "." : " i ogłusza przeciwnika na 3 tury."}`;
+    } else if (ability.id === "kōgeki") {
+      next = playerAttack(state, { forceCritical: true, critMultiplierOverride: 1.5 });
+      const physicalMessage = next.playerMessage;
+      if (next.missed) {
+        message = "Kōgeki nie trafiło.";
+      } else if (next.enemyDefeated) {
+        message = `${physicalMessage} KRYTYK!`;
+      } else {
+        const bonusPercent = 0.5 + window.player.armorPenetration * 0.002;
+      const bonus = M.magicDamage(M.currentWeaponDamage() * bonusPercent, state.enemyMagicResistance, window.player.magicPenetration);
+        const result = M.applyDamageToEnemy(next, bonus);
+        next = result.state;
+        M.damageHeal(result.dealt, true);
+        message = `${physicalMessage} KRYTYK! Dodatkowo ${result.dealt} magicznych obrażeń.`;
+      }
+    }
+
+    return finishPlayerAction(next, message, ability, true);
+  }
+
+  function useWeaponAbility(state) {
+    const player = window.player;
+    if (player.weaponId === "yamato") {
+      const threshold = Math.min(100, (player.yamatoExecuteCap || 5) + (state.yamatoJudgementStacks || 0));
+      if (state.enemyHealth > state.enemyMaxHealth * threshold / 100) {
+        return { ...state, message: `Judgement Cut wymaga celu poniżej ${threshold}% HP.` };
+      }
+      player.yamatoExecuteCap = Math.min(100, (player.yamatoExecuteCap || 5) + 1);
+      return { ...state, enemyHealth: 0, enemyDefeated: true, message: "Judgement Cut! Przeciwnik został natychmiast pokonany!", weaponAbilityUsed: true };
+    }
+    if (player.weaponId === "jhinPistol") {
+      if (!(state.jhinPool > 0)) return { ...state, message: "Pula Pistoletu Jhina jest pusta." };
+      const damage = M.applyDamageToEnemy(state, M.physicalDamage(state.jhinPool, state.enemyArmor, player.armorPenetration, player.armorPenetrationPercent || 0), { noOverkill: true });
+      return { ...damage.state, jhinPool: 0, weaponAbilityUsed: true, message: `Pistolet Jhina uwalnia ${damage.dealt} obrażeń z puli.` };
+    }
+    return { ...state, message: "Ta broń nie ma aktywnej umiejętności." };
+  }
+
+  function usePotion(state, potionId) {
+    const index = window.player.potionInventory.indexOf(potionId);
+    const potion = window.shopPotions?.find((item) => item.id === potionId);
+    if (index < 0 || !potion) return { ...state, message: "Nie posiadasz tej mikstury." };
+
+    window.player.potionInventory.splice(index, 1);
+
+    if (potion.effect === "healthPotion") {
+      const heal = Math.min(250, potion.value + Math.floor(window.player.maxHealthPoints * 0.07));
+      window.player.healthPoints = M.clamp(window.player.healthPoints + heal, 0, window.player.maxHealthPoints);
+      return { ...state, message: `Mikstura leczy ${heal} HP.` };
+    }
+
+    const key = potion.effect === "accuracyPotion" ? "potionAccuracy" : "potionLifesteal";
+    if (key === "potionLifesteal") window.player.lifesteal += potion.value;
+    return { ...state, effects: { ...state.effects, [key]: potion.duration }, message: `${potion.name} aktywowany na ${potion.duration} tur.` };
+  }
+
+  window.BattleActions = {
+    playerAttack,
+    enemyTurn,
+    absorbWithShields,
+    registerHit,
+    setOpponentTurn,
+    finishPlayerAction,
+    useAbility,
+    useWeaponAbility,
+    usePotion,
+  };
+})();

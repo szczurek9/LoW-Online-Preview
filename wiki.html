@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Podstawowe Meta Tagi dla Google -->
+<title>Legends of Wpierdol Online - Wiki</title>
+<meta name="description" content="Pełen opis mechanik, wzorów matematycznych, klas, broni oraz przeciwników w grze Legends of Wpierdol.">
+
+<!-- Tagi Open Graph (Discord, Facebook) -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="Legends of Wpierdol Online - Wiki">
+<meta property="og:description" content="Baza wiedzy i mechanik gry. Poznaj wzory obliczeń, uników, statystyki broni oraz rozpracuj 50 poziomów bossów.">
+<meta property="og:url" content="https://legendsofwpierdol-online.pages.dev/wiki">
+<meta property="og:image" content="https://legendsofwpierdol-online.pages.dev/res/img/background.png">
+<meta property="og:site_name" content="Legends of Wpierdol - Wiki">
+
+<!-- Tagi dla X / Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Legends of Wpierdol Online - Wiki">
+<meta name="twitter:description" content="Baza wiedzy i mechanik gry. Poznaj wzory obliczeń, uników, statystyki broni oraz rozpracuj 50 poziomów bossów.">
+<meta name="twitter:image" content="https://legendsofwpierdol-online.pages.dev/res/img/background.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=New+Rocker&family=Tagesschrift&display=swap" rel="stylesheet">
+<!-- Wspólne motywy i style z gry, dzięki temu wiki wygląda tak samo jak interfejs gry. -->
+<link rel="stylesheet" href="style/themes.css">
+<link rel="stylesheet" href="style/base.css">
+<link rel="stylesheet" href="style/wiki.css">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body data-theme="noc">
+
+<div class="main wiki-main">
+  <h1 id="titleheader">Legends of Wpierdol</h1>
+  <p id="titleedition">Wiki mechanik · Web Edition</p>
+
+  <div class="wiki-toolbar">
+    <a class="wiki-play" href="index.html">🎮 Zagraj w grę</a>
+    <label class="wiki-theme">
+      <span>Motyw</span>
+      <select id="wiki-theme">
+        <option value="noc">Noc (ciemny)</option>
+        <option value="dzien">Dzień (jasny)</option>
+        <option value="kontrast">Wysoki kontrast</option>
+        <option value="las">Las (ciemna zieleń)</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="wiki-search" role="search">
+    <input id="wiki-search-input" type="text" placeholder="Szukaj w wiki…  ( / )" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Szukaj w wiki">
+    <span id="wiki-search-count" class="wiki-search-count" aria-live="polite"></span>
+    <button type="button" id="wiki-search-prev" aria-label="Poprzedni wynik" title="Poprzedni wynik (Shift+Enter)" disabled>▲</button>
+    <button type="button" id="wiki-search-next" aria-label="Następny wynik" title="Następny wynik (Enter)" disabled>▼</button>
+    <button type="button" id="wiki-search-clear" aria-label="Wyczyść wyszukiwanie" title="Wyczyść (Esc)" hidden>✕</button>
+  </div>
+
+  <div class="wiki-layout">
+    <nav class="toc" aria-label="Spis treści">
+      <a href="#klasy">Klasy</a><a href="#walka">Walka</a><a href="#ikony">Ikony</a><a href="#umiejetnosci">Umiejętności</a>
+      <a href="#efekty">Efekty</a><a href="#bronie">Bronie</a><a href="#ad">Przedmioty AD</a>
+      <a href="#magiczne">Magiczne</a><a href="#mikstury">Mikstury</a><a href="#skille">Skille</a>
+      <a href="#przeciwnicy">Przeciwnicy</a><a href="#fale">Fale i ucieczka</a><a href="#arena">Arena</a><a href="#pojedynki">Pojedynki 1v1</a><a href="#sklep">Sklep</a>
+      <a href="#skiny">Skiny</a><a href="#osiagniecia">Osiągnięcia</a><a href="#zapis">Zapis i opcje</a><a href="#sterowanie">Sterowanie</a>
+    </nav>
+
+<div class="wrap">
+
+<section id="wstep">
+<p>Gra to turowy „idle-RPG" przeglądarkowy: gracz tworzy postać, wybiera jedną z 5 klas i wspina się przez 50 poziomów przeciwników, kupując bronie, przedmioty i ulepszenia za zdobywane pieniądze oraz odblokowując kosmetyczne skiny za Skin Pointy.</p>
+</section>
+
+<section id="klasy">
+<h2>Klasy postaci</h2>
+<p>Wybór jest jednorazowy przy tworzeniu postaci. Każda klasa ma inne startowe zdrowie, pancerz i odporność magiczną, które rosną z każdym poziomem, oraz własne bonusy. Limitów pancerza nie ma.</p>
+<div class="grid">
+  <div class="card"><span class="tag">220 HP, 25 pancerza, 30 odp. mag.</span><h3><span class="wiki-item-icon" data-group="classes" data-id="assassin" data-glyph="🥷"></span>Zabójca</h3><ul>
+    <li>+10% obrażeń broni, +5% lifestealu, +10% celności</li>
+    <li>Pasywka <b>Overkill</b> — nadmiarowe obrażenia budują pulę leczącą i przebijającą pancerz</li>
+    <li>Ma dostęp do broni i przedmiotów AD</li>
+  </ul></div>
+  <div class="card"><span class="tag">190 HP, 40 pancerza, 5 odp. mag.</span><h3><span class="wiki-item-icon" data-group="classes" data-id="mage" data-glyph="🧙"></span>Mag</h3><ul>
+    <li>Start: 320 many, +125% regeneracji many, +5 pen. magicznej</li>
+    <li>Co poziom: +40 HP, +1 pancerza, +1 odp. magicznej co 2 poziomy</li>
+    <li>Nie może używać broni ani przedmiotów AD — walczy wyłącznie umiejętnościami</li>
+    <li>8 dynamicznych slotów (AD lub AP), 25% zniżki na przedmioty magiczne; może kupować przedmioty AD, ale nie broń</li>
+  </ul></div>
+  <div class="card"><span class="tag">270 HP, 45 pancerza, 25 odp. mag.</span><h3><span class="wiki-item-icon" data-group="classes" data-id="tank" data-glyph="🛡️"></span>Tank</h3><ul>
+    <li>Co poziom: +60 HP, +2 pancerza, +2 odp. magicznej (na poziomie 51: 3270 HP, 145 pancerza, 125 odp. magicznej)</li>
+    <li>Pasywka <b>Skumulowany Gniew</b> — otrzymane obrażenia (1:1, po redukcji pancerzem) budują pulę, która eksploduje automatycznie</li>
+    <li>Kara -25% obrażeń za broń zadającą &gt;500 dmg</li>
+  </ul></div>
+  <div class="card"><span class="tag">210 HP, 30 pancerza, 15 odp. mag.</span><h3><span class="wiki-item-icon" data-group="classes" data-id="samurai" data-glyph="⚔️"></span>Samurai</h3><ul>
+    <li>+15% obrażeń, +15% celności, +10% uniku</li>
+    <li>Co poziom: +50 HP, +1 pancerza, +1 odp. magicznej</li>
+    <li>Pasywka <b>Opanowanie</b> — krytyki x1,2 zamiast x1,5 (poza Kōgeki)</li>
+    <li>Z bronią białą (Melee): +10% obrażeń zwykłego ataku i +5% lifestealu</li>
+    <li>Przełącznik stylu walki <b>Sen no Kata</b> (Bōei / Chikara)</li>
+  </ul></div>
+  <div class="card"><span class="tag">370 HP, 30 pancerza, 25 odp. mag.</span><h3><span class="wiki-item-icon" data-group="classes" data-id="archer" data-glyph="🏹"></span>Łucznik</h3><ul>
+    <li>+30% celności, +5% lifestealu, start: 200 many</li>
+    <li>8 dynamicznych slotów — każdy slot to przedmiot AD albo AP, w dowolnych proporcjach</li>
+    <li>Pasywka <b>Eagle Sight</b> — +10% obrażeń zwykłego ataku z broni dystansowej (Ranged)</li>
+    <li>15% zniżki na przedmioty magiczne</li>
+  </ul></div>
+</div>
+</section>
+
+<section id="walka">
+<h2>System walki</h2>
+<h3>Przebieg tury</h3>
+<p>Gracz wybiera akcję (atak / umiejętność / umiejętność broni / miksturę / ucieczkę). Zwykły atak i umiejętności kończą turę: gracz regeneruje manę, wróg wykonuje swój ruch, cooldowny i efekty czasowe maleją o 1. Mikstury <b>nie</b> kończą tury.</p>
+<h3>Celność</h3>
+<div class="formula">celność = clamp(
+  (100 - unikWroga, chyba że wróg ma playerAttackChance)
+  + bonusCelności + celnośćBroni + efektyTury
+, 0, 100)
+rzut(0–99) &lt; celność → trafienie</div>
+<h3>Redukcja obrażeń fizycznych (pancerz)</h3>
+<div class="formula">pancerzEfekt = max(0, pancerz*(1 - penProcentowa/100) - penPłaska)
+redukcja = pancerzEfekt / (pancerzEfekt + 100)
+obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
+<h3>Redukcja obrażeń magicznych</h3>
+<div class="formula">odpornośćEfekt = max(0, odporność - penMagiczna)
+redukcja = odpornośćEfekt / (odpornośćEfekt + 100)
+obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
+<p class="note">100 pkt pancerza/odporności redukuje obrażenia o 50%; redukcja rośnie asymptotycznie do 100%, ale finalne obrażenia nigdy nie spadają poniżej 1. Limitu pancerza nie ma. Przeciwnicy w kampanii zadają 80% obrażeń fizycznych (liczonych z pancerzem) i 20% magicznych (liczonych z odpornością magiczną).</p>
+
+<details><summary>Pełny łańcuch obliczeń ataku bronią gracza</summary><div class="inner">
+<ol>
+<li>weaponDamage = max(1, floor(baseDamage + AD*adScaling))</li>
+<li>Mnożnik klasy: Zabójca +10%, Samurai +15% (+10% z bronią Melee), Łucznik +10% (broń Ranged), Tank -25%/-20% (broń &gt;500 dmg), Chikara +7,5%</li>
+<li>Sen no Kata / Bōei: co 3. atak = 10% obrażeń, ale ogłusza wroga na 1 turę</li>
+<li>Krytyk: naturalny / wymuszony (Primal Strike) / 4% Pistolet Jhina. Mnożnik: Samurai x1,2, inni x1,5, super-krytyk Zabójcy x2,25, Jhin x4</li>
+<li>Bonusy przedmiotów AD (Strzały Cieni, Płaszcz Zabójcy, Uchwyt Wilka — stackowalny)</li>
+<li><b>Primal Ready</b> (Zabójca, pula Overkill ≥ 50% HP wroga): pancerz wroga liczony jako ×0,2</li>
+<li>Dodatkowe obrażenia w tym samym ataku: Potęga Nocy (nieuchronne co 5 atak), 4. atak Jhina (fizyczne), Yamato (magiczne co atak)</li>
+<li>Automatyczne uwolnienie puli Jhina po 16 atakach, jeśli gracz nie zrobi tego ręcznie</li>
+<li>Lifesteal: heal = floor(obrażenia * (lifesteal(+bonus Zabójcy; Samuraj z bronią Melee +5%)) / 100)</li>
+<li>Leczenie z puli Overkill: floor(pula * (5 + floor(penPancerza/0,7) + floor(pancerz/0,8)) / 100)</li>
+<li>Regeneracja many na turę: floor(bazowa_mana_klasy * 0,03 * (1 + 3,25 * R / (R + 200))), gdzie R = suma % regeneracji many z klasy i przedmiotów, a bazowa mana klasy to 320 (Mag), 200 (Łucznik) lub 100 (reszta). Mana z przedmiotów powiększa tylko pulę, nie regenerację. Dodatkowo w trakcie walki gracz dostaje stałe +5 many co 5 sekund czasu rzeczywistego — ten bonus nie skaluje się z regeneracją many i nie zależy od tur. Skuteczność maleje z każdym kolejnym punktem R, a maksymalny bonus to +325%.</li>
+</ol></div></details>
+</section>
+
+<section id="ikony">
+<h2>Ikony statystyk</h2>
+<p>W grze statystyki oznaczone są małymi ikonami (w walce, w sklepie i na kartach przedmiotów). Po najechaniu na ikonę, a na telefonie po jej dotknięciu, pojawia się jej nazwa. Poniżej znaczenie każdej z nich.</p>
+<div class="tablewrap"><table>
+<tr><th>Ikona</th><th>Statystyka</th><th>Co oznacza</th></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/hp.png" alt="Zdrowie (HP)" width="32" height="32" loading="lazy"></td><td><b>Zdrowie (HP)</b></td><td>Punkty życia postaci. Gdy spadną do 0, następuje śmierć (zob. <a href="#fale">Fale, poziomy, ucieczka i śmierć</a>). Leczą je mikstury, lifesteal i umiejętności lecznicze, a maksymalne HP podnoszą ulepszenia sklepowe (Skała Zdrowia, Woda Życia).</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/mana.png" alt="Mana" width="32" height="32" loading="lazy"></td><td><b>Mana</b></td><td>Zasób potrzebny do rzucania umiejętności (kolumna „Koszt” w tabelach umiejętności). Regeneruje się co turę. Przedmioty z manem zwiększają tylko jej pulę, nie tempo regeneracji.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/mana-regen.png" alt="Regeneracja many" width="32" height="32" loading="lazy"></td><td><b>Regeneracja many</b></td><td>Procentowy bonus do regeneracji many na turę (z klasy Maga oraz przedmiotów magicznych). Im więcej już masz, tym mniej daje każdy kolejny punkt — maksymalny bonus to +325%. Wzór w <a href="#walka">Pełnym łańcuchu obliczeń</a>.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/damage.png" alt="Obrażenia" width="32" height="32" loading="lazy"></td><td><b>Obrażenia</b></td><td>Ilość obrażeń zadawanych przez atak. Ta sama ikona oznacza też przycisk zwykłego ataku („Atakuj”).</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/ad.png" alt="Siła ataku (AD)" width="32" height="32" loading="lazy"></td><td><b>Siła ataku (AD)</b></td><td>Podbija obrażenia broni: <code>obrażenia bazowe + AD × skalowanie AD broni</code>. Daje ją większość przedmiotów AD (niedostępnych dla Maga) i skaluje się z nią część umiejętności.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/ap.png" alt="Moc umiejętności (AP)" width="32" height="32" loading="lazy"></td><td><b>Moc umiejętności (AP)</b></td><td>Skaluje umiejętności zadające obrażenia magiczne, np. Gwiezdne Uderzenie: 60 + 90% AP. Zdobywasz ją z przedmiotów magicznych.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/crit.png" alt="Szansa na krytyka" width="32" height="32" loading="lazy"></td><td><b>Szansa na krytyka</b></td><td>Prawdopodobieństwo ciosu krytycznego. Standardowy mnożnik to x1,5; Samurai ma x1,2, a Zabójca potrafi zadać super-krytyka x2,25.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/accuracy.png" alt="Celność" width="32" height="32" loading="lazy"></td><td><b>Celność</b></td><td>Szansa na trafienie przeciwnika: <code>(100 − unik wroga) + bonus celności</code>, ograniczona do 0–100%. Zwiększają ją klasy, bronie, przedmioty i Eliksir Precyzji.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/lifesteal.png" alt="Kradzież życia (lifesteal)" width="32" height="32" loading="lazy"></td><td><b>Kradzież życia (lifesteal)</b></td><td>Procent zadanych obrażeń, który wraca do ciebie jako leczenie. Źródła: klasy (Zabójca, Łucznik), przedmioty AD, Koktajl Wampira oraz osobny lifesteal magiczny z przedmiotów magicznych.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/armor.png" alt="Pancerz" width="32" height="32" loading="lazy"></td><td><b>Pancerz</b></td><td>Zmniejsza obrażenia fizyczne: <code>redukcja = pancerz / (pancerz + 100)</code>, więc 100 pkt to −50% obrażeń. Pancerz nie ma górnego limitu, ale kolejne punkty dają coraz mniej.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/armor-pen.png" alt="Penetracja pancerza" width="32" height="32" loading="lazy"></td><td><b>Penetracja pancerza</b></td><td>Ignoruje część pancerza wroga — procentowo i/lub płasko — przez co twoje obrażenia fizyczne są mniej redukowane. Przebita (pęknięta) tarcza na ikonie to ten sam motyw co przy pancerzu.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/mr.png" alt="Odporność magiczna (MR)" width="32" height="32" loading="lazy"></td><td><b>Odporność magiczna (MR)</b></td><td>Zmniejsza obrażenia magiczne według tego samego wzoru co pancerz: <code>redukcja = MR / (MR + 100)</code>.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/magic-pen.png" alt="Penetracja magii" width="32" height="32" loading="lazy"></td><td><b>Penetracja magii</b></td><td>Płaska wartość odejmowana od odporności magicznej wroga, dzięki czemu twoje obrażenia magiczne są mniej redukowane.</td></tr>
+</table></div>
+</section>
+
+<section id="umiejetnosci">
+<h2>Umiejętności klasowe</h2>
+<p><b>Redukcja odnowienia.</b> Część przedmiotów (AD i AP) skraca odnowienie umiejętności o stałą liczbę tur. Redukcja ogólna działa na wszystkie umiejętności z odnowieniem, a redukcja „R" tylko na umiejętność pod klawiszem R i dolicza się do ogólnej. Łączne limity z wszystkich założonych przedmiotów: maks. −2 tury redukcji ogólnej i maks. −2 tury redukcji R. Odnowienie nigdy nie spada poniżej 1 tury, a Gwiezdnego Uderzenia i Mushin (odnowienie 1) w ogóle nie da się skrócić.</p>
+<p><b>Jak czytać liczby.</b> <b>Moc umiejętności (AP)</b> to Twoja moc z przedmiotów plus stosy Księgi Adeptów, powiększona o procentowe bonusy z przedmiotów (np. z Kostura Zagłady). <b>AD</b> to obrażenia z przedmiotów AD. <b>Obrażenia broni</b> to tyle, ile zadaje Twoja broń razem z bonusem z AD — zanim doliczą się krytyk i bonusy klasy. Obrażenia magiczne zmniejsza odporność magiczna wroga (a Twoje przebicie magii ją obniża), fizyczne — jego pancerz (a Twoje przebicie pancerza go obniża); szczegóły w sekcji <a href="#walka">System walki</a>. Wyniki są zaokrąglane w dół do pełnych punktów.<br><i>Przykład:</i> Mag z 500 AP rzuca Gwiezdne Uderzenie: 60 + 90% z 500 = 60 + 450 = 510 obrażeń, zanim odejmie je odporność magiczna wroga.<br>Podane wartości dotyczą kampanii i areny. Różnice w pojedynkach są oznaczone jako <i>Pojedynek</i> i zebrane w sekcji <a href="#pojedynki">Pojedynki 1v1</a>.</p>
+<details open><summary>Zabójca — pasywka: Overkill</summary><div class="inner">
+<p>Gdy zadasz wrogowi więcej obrażeń, niż miał HP (np. dobijasz go ciosem za 300, a zostało mu 100 HP), nadwyżka (200) trafia do puli Overkill. Pula robi dwie rzeczy:</p>
+<ul>
+<li><b>Leczy Cię przy każdym trafionym zwykłym ataku</b> i przy tym się nie zużywa. Wyleczysz tyle procent puli: 5% + 1% za każde 0,7 punktu przebicia pancerza + 1% za każde 0,8 punktu pancerza. <i>Przykład:</i> przy 28 przebicia i 40 pancerza to 5 + 40 + 50 = 95% puli na każdy atak.</li>
+<li><b>Przebija pancerz:</b> gdy pula urośnie do połowy maks. HP wroga, Twój następny zwykły atak ignoruje 80% jego pancerza, a pula spada do zera.</li>
+</ul>
+<p>Zabójstwo wroga przywraca Ci 10% maks. many.<br><i>Pojedynek: zaczynasz z pulą równą 15% maks. HP przeciwnika (to 30% progu potrzebnego do przebicia pancerza), a pula nie zeruje się między rundami.</i></p>
+<table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/assassin/ability1.png" data-glyph="⚔️"></span></td><td>Primal Strike</td><td>200</td><td>—</td><td>Następny zwykły atak jest krytykiem (x1,5). Jeśli ten atak i tak byłby krytykiem z Twojej szansy, dostajesz super-krytyk x2,25. Zużywa się przy tym ataku.</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/assassin/ability2.png" data-glyph="✨"></span></td><td>Un-Dodgable Speed</td><td>80</td><td>4</td><td>Przez 3 tury masz +25% celności, a wróg ma −30% szansy na trafienie Ciebie. Tura rzucenia liczy się do tych 3, więc wzmocnioną celność mają dwa kolejne zwykłe ataki.</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/assassin/ability3.png" data-glyph="⚔️"></span></td><td>Overkill Release</td><td>120</td><td>5</td><td>Zadaje całą pulę Overkill jako obrażenia fizyczne, ignorując 80% pancerza wroga (Twoje przebicie pancerza liczy się normalnie) i zeruje pulę. Gdy puli nie ma, umiejętność się nie wykona i nie zabiera many.</td></tr>
+</table></div></details>
+<details><summary>Mag — brak pasywki</summary><div class="inner">
+<table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability1.png" data-glyph="🔮"></span></td><td>Powiew Burzy</td><td>25</td><td>—</td><td>Obrażenia magiczne: 15 + 25% Twojej mocy umiejętności (AP). Leczy Cię według magicznego lifestealu.</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability2.png" data-glyph="🔮"></span></td><td>Gwiezdne Uderzenie</td><td>100</td><td>1</td><td>Obrażenia magiczne: 60 + 90% AP. Leczy Cię według magicznego lifestealu.<br><i>Pojedynek: 60 + 80% AP, koszt 125 many.</i></td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability3.png" data-glyph="🔮"></span></td><td>Zabójcze Pnącza</td><td>70</td><td>4</td><td>Ogłusza wroga na 3 tury i dodatkowo rani go przez 3 tury: za każdym razem 10 + 10% AP obrażeń magicznych (pierwszy raz od razu po rzucie).<br><i>Pojedynek: ogłuszenie trwa 1 turę, obrażenia nadal 3 tury.</i></td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability4.png" data-glyph="⚔️"></span></td><td>Śmiertelne Lustro</td><td>50</td><td>5</td><td>Przygotowuje blok na najbliższy atak wroga. Po odjęciu pancerza blokujesz 10% obrażeń i odbijasz 20% zablokowanej części z powrotem we wroga. Jeśli cios by Cię zabił (obrażenia ≥ Twoje aktualne HP), blokujesz aż 99%, odbijasz 5% zablokowanej części i leczysz się o 15% zablokowanej części. W kampanii i arenie blok działa tylko na kontratak wroga w turze rzucenia — jeśli wróg nie trafi, efekt przepada.<br><i>Pojedynek: blok śmiertelnego ciosu to 65%, odnowienie 6 tur; efekt czeka na atak przeciwnika i znika po Twoim kolejnym ruchu, jeśli ten nie zaatakował.</i></td></tr>
+</table></div></details>
+<details><summary>Tank — pasywka: Skumulowany Gniew</summary><div class="inner">
+<p>Każde obrażenie, które faktycznie otrzymujesz (po odjęciu pancerza i bloku Lustra), dokłada się 1:1 do puli Gniewu. Gdy pula dobije do 1,5 raza obrażeń Twojej broni, wybucha sama:</p>
+<ul>
+<li>zadaje wrogowi obrażenia fizyczne równe 70% puli (zmniejszone przez jego pancerz),</li>
+<li>leczy Cię o 35% puli,</li>
+<li>do następnego ataku wroga dodaje Ci pancerz równy 5% puli (bez żadnego limitu).</li>
+</ul>
+<p>Po wybuchu pula wraca do zera.</p>
+<table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/tank/ability1.png" data-glyph="✨"></span></td><td>Kamienny Bastion</td><td>50</td><td>4</td><td>Ogłusza wroga na 2 tury. Przez 5 tur Twój pancerz rośnie z każdą turą o kolejne 2%: +2%, +4%, +6%, +8%, +10% (procent Twojego pancerza).<br><i>Pojedynek: ogłuszenie trwa 1 turę.</i></td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/tank/ability2.png" data-glyph="⚡"></span></td><td>Skumulowany Gniew (aktywna)</td><td>50</td><td>2</td><td>Ręcznie detonuje pulę Gniewu: zadaje obrażenia magiczne równe 25% puli, leczy Cię o 30% puli i zeruje pulę.</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/tank/ability3.png" data-glyph="✨"></span></td><td>Żelazna Prowokacja</td><td>45</td><td>2</td><td>Przez 2 tury kara za ciężką broń (obrażenia broni powyżej 500) jest mniejsza: −20% zamiast −25%, a Twoja celność rośnie o 25%.</td></tr>
+</table></div></details>
+<details><summary>Samurai — pasywka: Opanowanie</summary><div class="inner">
+<p>Zwykłe ataki zadają o 15% więcej obrażeń, ale krytyk zwiększa je tylko 1,2 raza zamiast 1,5 raza. Wyjątek: Kōgeki zawsze krytykuje na x1,5.</p>
+<p>Gdy walczysz bronią białą (Melee — także Pięściami), zwykłe ataki zadają dodatkowo +10% obrażeń i leczą Cię o dodatkowe 5% zadanych obrażeń (lifesteal). Bonusy obrażeń sumują się: 15% + 10% = +25%. Broń hybrydowa (Hybrid) i dystansowa (Ranged) tego bonusu nie daje.</p>
+<table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability1.png" data-glyph="✨"></span></td><td>Mushin</td><td>50</td><td>1</td><td>Leczy Cię o 3% maks. HP plus 0,1% za każdy punkt przebicia pancerza (maksymalnie 10%, limit osiągasz przy 70 przebicia). Przez 3 tury wróg zadaje o 30% mniej obrażeń (liczone po krytyku, przed odjęciem pancerza).</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability2.png" data-glyph="🔄"></span></td><td>Sen no Kata</td><td>0</td><td>—</td><td>Przełącznik trybu (nie zużywa tury). <b>Bōei:</b> co 3. zwykły atak zadaje tylko 10% obrażeń, ale ogłusza wroga na 1 turę. <b>Chikara:</b> zadajesz o 7,5% więcej obrażeń (dodaje się do bonusów pasywki Samuraja), a wróg zadaje Ci o 4,5% więcej.</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability3.png" data-glyph="⚡"></span></td><td>Kōgeki</td><td>30</td><td>2</td><td>Zwykły atak z gwarantowanym krytykiem x1,5. Jeśli trafisz i wróg przeżyje, dostaje dodatkowo obrażenia magiczne równe obrażeniom Twojej broni × (50% + 0,2% za każdy punkt przebicia pancerza). Leczy według magicznego lifestealu.</td></tr>
+</table></div></details>
+<details><summary>Łucznik — pasywka: Eagle Sight</summary><div class="inner">
+<p>+10% obrażeń zwykłego ataku z broni Ranged. 8 wspólnych slotów na przedmioty AD i magiczne (AP). Atak Q zadaje obrażenia fizyczne: obrażenia = obrażenia bazowe broni + AP × (skalowanie AD broni × 0,72) + 50% AD. Bez przedmiotów AP: obrażenia bazowe broni + AD × (skalowanie AD broni × 1,16), bez dodatku 50% AD. Bez przedmiotów AD atak Q leczy z magicznego lifestealu (50% skuteczności) zamiast fizycznego.</p>
+<table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/archer/ability1.png" data-glyph="✨"></span></td><td>Nieokiełznane Skupienie (W)</td><td>55</td><td>3</td><td>Nie zużywa tury. Twój następny atak Q jest gwarantowanym krytykiem x2 (zamiast x1,5) i nie może chybić.</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/archer/ability2.png" data-glyph="🔮"></span></td><td>Rytm Wojny (E)</td><td>70</td><td>3</td><td>Zwykły atak, który zadaje obrażenia magiczne: obrażenia Twojej broni plus 145% AD (jeśli nie masz przedmiotów AD — plus 50 + 40% AP). Liczy się też bonus +10% z pasywki (broń Ranged), może być krytykiem x1,5 i może chybić. Leczy tylko według magicznego lifestealu. Najbliższy atak wroga zostaje uniknięty (nawet jeśli ten atak chybił).</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/archer/ability3.png" data-glyph="🔮"></span></td><td>Strzała Mrozu (R)</td><td>170</td><td>6</td><td>Obrażenia magiczne: 100 + 85% AP + 107% AD. Ogłusza wroga na 3 tury (o ile ten cios go nie zabił). Leczy według magicznego lifestealu.<br><i>Pojedynek: ogłuszenie trwa 2 tury.</i></td></tr>
+</table></div></details>
+</section>
+
+<section id="efekty">
+<h2>Efekty statusowe w walce</h2>
+<div class="tablewrap"><table>
+<tr><th>Ikona</th><th>Efekt</th><th>Źródło</th><th>Działanie</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="stun" data-glyph="ℹ️"></span></td><td>Ogłuszenie</td><td>Sen no Kata (Bōei, 1 tura), Zabójcze Pnącza (3), Kamienny Bastion (2), Strzała Mrozu (3)</td><td>wróg pomija turę (w pojedynkach ogłuszenia są krótsze — sekcja Pojedynki 1v1)</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="poison" data-glyph="ℹ️"></span></td><td>Zatrucie</td><td>Kieł Węża (co 5. atak)</td><td>30+25%AD obrażeń magicznych/turę, obniża szansę na unik wroga o 10% (min. 0%)</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="vines" data-glyph="ℹ️"></span></td><td>Pnącza</td><td>Zabójcze Pnącza</td><td>10 + 10% AP obrażeń magicznych na turę, przez 3 tury (pierwszy raz od razu po rzucie)</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="mirror" data-glyph="ℹ️"></span></td><td>Śmiertelne Lustro</td><td>umiejętność Maga</td><td>blokuje 10% obrażeń (99%, jeśli cios byłby śmiertelny) i odbija część z powrotem we wroga; zużywa się po trafieniu, a w kampanii znika po turze rzucenia</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="mushin" data-glyph="ℹ️"></span></td><td>Mushin</td><td>umiejętność Samuraja</td><td>-30% obrażeń wroga na 3 tury</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="focusMark" data-glyph="ℹ️"></span></td><td>Znacznik Skupienia</td><td>Nieokiełznane Skupienie (Łucznik)</td><td>następny atak Q: gwarantowany krytyk x2, nie chybia</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="evadeNext" data-glyph="ℹ️"></span></td><td>Unik z Rytmu Wojny</td><td>Rytm Wojny (Łucznik)</td><td>następny atak wroga zostaje uniknięty; czeka, jeśli wróg jest ogłuszony</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="ironTaunt" data-glyph="ℹ️"></span></td><td>Żelazna Prowokacja</td><td>umiejętność Tanka</td><td>mniejsza kara ciężkiej broni, +25% celności</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="bastion" data-glyph="ℹ️"></span></td><td>Bastion</td><td>Kamienny Bastion</td><td>+2% pancerza/turę, maks. 5 tur</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="rageArmor" data-glyph="ℹ️"></span></td><td>Pancerz z wściekłości</td><td>Skumulowany Gniew (Tank)</td><td>po wybuchu puli Gniewu: pancerz +5% wartości puli do następnego ataku wroga (ponad limit pancerza klasy)</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="potionAccuracy" data-glyph="ℹ️"></span></td><td>Eliksir Precyzji</td><td>mikstura</td><td>+50% celności na 7 tur</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="potionLifesteal" data-glyph="ℹ️"></span></td><td>Koktajl Wampira</td><td>mikstura</td><td>+10% lifestealu na 10 tur</td></tr>
+</table></div>
+</section>
+
+<section id="bronie">
+<h2>Bronie</h2>
+<div class="tablewrap"><table>
+<tr><th>Ikona</th><th>Broń</th><th>Cena</th><th>Obrażenia bazowe</th><th>Skalowanie AD</th><th>Typ</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="fists"></span></td><td>Pięści</td><td>0 (startowa)</td><td>3</td><td>+1%</td><td>M</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="spear"></span></td><td>Włócznia</td><td>25 $</td><td>10</td><td>+10%</td><td>H</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="wornSword"></span></td><td>Zniszczony miecz</td><td>55 $</td><td>15</td><td>+20%</td><td>M</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="bow"></span></td><td>Łuk</td><td>150 $</td><td>45</td><td>+50%</td><td>R</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="machete"></span></td><td>Maczeta</td><td>275 $</td><td>60</td><td>+70%</td><td>M</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="shuriken"></span></td><td>Shuriken</td><td>350 $</td><td>70</td><td>+60%</td><td>H</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="revolver"></span></td><td>Rewolwer</td><td>475 $</td><td>75</td><td>+75%</td><td>R</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="rifle"></span></td><td>Karabin</td><td>700 $</td><td>90</td><td>+100%</td><td>R</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="katana"></span></td><td>Katana</td><td>900 $</td><td>100</td><td>+100%</td><td>M</td></tr>
+</table></div>
+<div class="grid">
+  <div class="card"><span class="tag">Unikalna — lootbox 4750 $</span><h3><span class="wiki-item-icon" data-group="weapons" data-id="jhinPistol"></span>Pistolet Jhina</h3><ul>
+    <li>300 dmg (+85% AD)</li>
+    <li>Co 4. atak: zawsze trafia, +44% AD dmg fizycznego, ładuje 44+4,4%AD do puli</li>
+    <li>4% szans na krytyka x4</li>
+    <li>Spacja uwalnia pulę ręcznie (bez krytyka); auto-uwolnienie po 16 atakach</li>
+  </ul></div>
+  <div class="card"><span class="tag">Unikalna — lootbox 4750 $</span><h3><span class="wiki-item-icon" data-group="weapons" data-id="yamato"></span>Yamato</h3><ul>
+    <li>350 dmg fiz. (+90% AD) + 120 dmg magicznych (+50% AP) na KAŻDY atak</li>
+    <li>+15 do celności gracza</li>
+    <li>Co 6. atak: stack Judgement Cut</li>
+    <li>Spacja: natychmiastowe wykończenie wroga poniżej progu HP (start 5%, trwale +1%/użycie)</li>
+  </ul></div>
+</div>
+<p class="note">Lootbox losuje jedną z dwóch broni unikalnych, których gracz jeszcze nie ma. Broni unikalnych nie da się kupić wprost ani sprzedać.</p>
+</section>
+
+<section id="ad">
+<h2>Przedmioty AD</h2>
+<p>Sloty: każda klasa ma 8 wspólnych slotów na przedmioty AD i magiczne (AP), w dowolnych proporcjach. Mag może kupować przedmioty AD, ale nie broń. Efekty sumują się z wyposażonych przedmiotów.</p>
+<h3>Przedmioty Tank i Wojownik</h3>
+<p>Dwie osobne zakładki w sklepie. Te przedmioty dają zdrowie, pancerz i odporność magiczną, a część z nich ma efekty. Zajmują te same 8 wspólnych slotów co inne przedmioty. Unikaty możesz mieć tylko jeden.</p>
+<ul>
+<li><b>Kolczuga (650 $):</b> +50 HP, +15 pancerza, +10 odporności magicznej.</li>
+<li><b>Stalowy Napierśnik (1000 $):</b> +100 HP, +25 pancerza.</li>
+<li><b>Lekki Pancerz (400 $):</b> +70 HP, +8 pancerza, +12 odporności magicznej.</li>
+<li><b>Pancerz Golema (2500 $, unikat):</b> +200 HP, +30 pancerza. Co 6. otrzymane trafienie dostajesz maksymalne zdrowie równe 10% obrażeń z tego trafienia (np. trafienie za 300 daje +30 maks. HP). Bonus jest trwały i zostaje także po zmianie poziomu.</li>
+<li><b>Napierśnik Lasu (2400 $):</b> +500 HP, +10 pancerza. Co 5 tur leczy 3,5% maksymalnego zdrowia plus 1% obrażeń otrzymanych w tej turze.</li>
+<li><b>Krwiożercza Kolczuga (1800 $, unikat):</b> +100 HP, +50 pancerza. Zmniejsza leczenie przeciwnika o 35% i leczysz się za 5% tego, co przeciwnik się leczy. Działa tylko w pojedynkach, bo wrogowie z kampanii się nie leczą.</li>
+<li><b>Młot Giganta (2100 $, unikat):</b> +20 AD, +300 HP. Każdy twój atak zadaje dodatkowo 3% twojego maksymalnego zdrowia jako obrażenia fizyczne (przy 3000 maks. HP to 90 obrażeń).</li>
+<li><b>Rycerskie Ostrze (600 $):</b> +30 AD, +10 pancerza.</li>
+<li><b>Kosa Żniwiarza (1300 $):</b> +45 AD, +120 HP, +7,5% lifestealu.</li>
+<li><b>Gwiazdołamacz (1700 $, unikat):</b> +50 AD. Co 4. trafiony atak daje tarczę równą 35% twojego AD na 2 tury (przy 500 AD to 175 punktów tarczy).</li>
+<li><b>Ognisty Tasak (2300 $, unikat):</b> +45 AD, +130 HP, +5% lifestealu. Co 4. trafiony atak podpala przeciwnika na 2 tury. Po pokonaniu przeciwnika dostajesz +5% lifestealu na 3 ataki.</li>
+<li><b>Pas runiczny (2500 $, unikat):</b> +65 AD, +30 odporności magicznej, +15 pancerza. Co 3. otrzymane obrażenia magiczne dają tarczę magiczną (50 + 10,5% tych obrażeń), a co 3. fizyczne tarczę fizyczną (25 + 14,5% tych obrażeń). Tarcze działają na następny atak wroga, a 25% zablokowanych przez nie obrażeń wraca jako bonusowe obrażenia przy twoim następnym trafieniu.</li>
+
+</ul>
+<p><b>Podpalenie:</b> przeciwnik traci co turę 10 + 13% twojego AD + 4% twojego AP obrażeń nieuchronnych (nie zmniejszają ich pancerz ani odporność magiczna) i leczy się o 15% słabiej. Przy 500 AD i 0 AP to 75 obrażeń na turę.</p>
+<p><b>Tarcze:</b> pojawiają się na pasku zdrowia za wypełnieniem HP i przyjmują obrażenia przed twoim zdrowiem. Zwykła tarcza jest biało-szara i blokuje wszystko, fizyczna jest różowa i blokuje tylko obrażenia fizyczne, magiczna jest niebieska i blokuje tylko magiczne.</p>
+<div class="tablewrap"><table>
+<tr><th>Ikona</th><th>Przedmiot</th><th>Cena</th><th>Bonusy</th><th>Efekt specjalny</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="ad-items" data-id="assassinRingAd"></span></td><td>Pierścień Zabójcy</td><td>750 $</td><td>+45 AD, +8 pen. płaskiej, +10% crit</td><td>—</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="ad-items" data-id="huntersDagger"></span></td><td>Sztylet Łowcy</td><td>850 $</td><td>+35 AD, +5% lifestealu, +5 celności</td><td>—</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="ad-items" data-id="flameBlade"></span></td><td>Ostrze Płomieni</td><td>1400 $</td><td>+60 AD, +20% pen. procentowej, +10 celności</td><td>unikalne</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="ad-items" data-id="snakeFang"></span></td><td>Kieł Węża</td><td>2100 $</td><td>+70 AD, +12% lifestealu</td><td>co 5. atak zatrucie (30 + 20% AD magicznych obrażeń); unikalne</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="ad-items" data-id="shadowArrows"></span></td><td>Strzały Cieni</td><td>3000 $</td><td>+105 AD, +20% crit</td><td>co 2. trafiony atak (2., 4., 6. w fali), jeśli jest krytykiem: dodatkowo x1,8 dmg (nie dla Samuraja); unikalne</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="ad-items" data-id="bloodyCannon"></span></td><td>Krwawa Armata</td><td>2800 $</td><td>+140 AD, +20% crit, +12 pen., +5 celności</td><td>—</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="ad-items" data-id="assassinCloakAd"></span></td><td>Płaszcz Zabójcy</td><td>3600 $</td><td>+125 AD, +30% crit</td><td>wróg &lt;30% HP → +20% dmg; unikalne</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="ad-items" data-id="wolfGrip"></span></td><td>Uchwyt Wilka</td><td>2600 $</td><td>+105 AD, +20% crit, +10% lifestealu</td><td>+8+12%AD dmg/atak, stackuje się z drugą sztuką (maks. 2 sztuki)</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="ad-items" data-id="nightPower"></span></td><td>Potęga Nocy</td><td>3300 $</td><td>+120 AD, +12 pen.</td><td>co 5. atak: 10+10%AD dmg nieuchronnych; unikalne</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="ad-items" data-id="hasteBlade"></span></td><td>Ostrze Pośpiechu</td><td>1400 $</td><td>+45 AD, +5 pen. płaskiej</td><td>−1 tura odnowienia umiejętności</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="ad-items" data-id="executionerSigil"></span></td><td>Sygnet Egzekutora</td><td>2000 $</td><td>+60 AD, +8 pen. płaskiej</td><td>−2 tury odnowienia umiejętności pod R</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="ad-items" data-id="impulseClaw"></span></td><td>Szpon Impulsu</td><td>3100 $</td><td>+85 AD, +8 pen. płaskiej, +10% crit</td><td>−2 tury odnowienia umiejętności</td></tr>
+</table></div>
+</section>
+
+<section id="magiczne">
+<h2>Przedmioty magiczne</h2>
+<p>Sloty: 8 wspólnych z przedmiotami AD (każda klasa). Mag ma 25% zniżki, a Łucznik 15% — poza pozycjami z adnotacją „brak zniżek klasowych".</p>
+<div class="tablewrap"><table>
+<tr><th>Ikona</th><th>Przedmiot</th><th>Cena</th><th>Efekty</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="enchantedBook"></span></td><td>Zaklęta Księga</td><td>500 $</td><td>+60 many, +45 AP</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="wandOfDestruction"></span></td><td>Różdżka Zniszczenia</td><td>1200 $</td><td>+75 AP, +70 many, +12 pen. magicznej</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="etherCrystal"></span></td><td>Kryształ Eteru</td><td>850 $</td><td>+55 AP, +6 pen. magicznej</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="healerNecklace"></span></td><td>Naszyjnik Uzdrowicielki</td><td>350 $</td><td>+100 many, +80% regen. many</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="astrologerRobe"></span></td><td>Szata Astrologa</td><td>400 $</td><td>+25 odp. magicznej, +50 many</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="angelShield"></span></td><td>Tarcza Anioła</td><td>550 $</td><td>+30 odp. magicznej, +50% regen. many</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="vampireHands"></span></td><td>Dłonie Wampira</td><td>600 $</td><td>lifesteal magiczny 10% (limit 20% dla tego przedmiotu)</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="adeptsBook"></span></td><td>Księga Adeptów</td><td>280 $</td><td>+5 AP po rzucie czaru (+5 dla Maga, +3 dla pozostałych klas), limit 30 AP; unikalna</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="adeptsBookUpgrade"></span></td><td>Ulepszenie Księgi Adeptów</td><td>850 $</td><td>podnosi limit Księgi Adeptów do 110; unikalne, wymaga Księgi</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="ringOfFate"></span></td><td>Pierścień Przeznaczenia</td><td>1800 $</td><td>+130 AP, +120 many, +100% regen. many (z malejącą skutecznością)</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="shadowMask"></span></td><td>Maska Cienia</td><td>1900 $</td><td>+100 AP, +20 odp. magicznej, +12 pen. magicznej</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="staffOfDoom"></span></td><td>Kostur Zagłady</td><td>2800 $</td><td>+20% do całkowitej mocy umiejętności (mnożnik); brak zniżek klasowych; unikalny</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="deadStarScepter"></span></td><td>Kostur Martwej Gwiazdy</td><td>3400 $</td><td>+210 AP, +100 many, +15 pen. magicznej</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="manaFountain"></span></td><td>Fontanna Many</td><td>2500 $</td><td>+200 many, +40 AP, +250% regen. many</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="worldDestroyer"></span></td><td>Niszczyciel Światów</td><td>5500 $</td><td>lifesteal magiczny 15% (limit 30% dla tego przedmiotu), +280 AP, +150 many, +20 pen. magicznej; max 1 sztuka</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="sorcererHourglass"></span></td><td>Klepsydra Czarodzieja</td><td>1500 $</td><td>+50 AP, +50 many, −1 tura odnowienia umiejętności</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="flowLoop"></span></td><td>Pętla Przepływu</td><td>2000 $</td><td>+65 AP, +60 many, −2 tury odnowienia umiejętności pod R</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="timeRiftMachine"></span></td><td>Machina Rozdarcia Czasu</td><td>3200 $</td><td>+95 AP, +100 many, +8 pen. magicznej, −2 tury odnowienia umiejętności</td></tr>
+</table></div>
+</section>
+
+<section id="mikstury">
+<h2>Mikstury</h2>
+<div class="tablewrap"><table>
+<tr><th>Ikona</th><th>Mikstura</th><th>Cena</th><th>Efekt</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="potions" data-id="precisionElixir"></span></td><td>Eliksir Precyzji</td><td>120 $</td><td>+50% celności na 7 tur, nie kumuluje się</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="potions" data-id="vampireCocktail"></span></td><td>Koktajl Wampira</td><td>150 $</td><td>+10% lifestealu na 10 tur, nie kumuluje się</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="potions" data-id="healthPotion"></span></td><td>Mikstura Zdrowia</td><td>60 $</td><td>leczy min(250, 25+7% maks. HP) natychmiast</td></tr>
+</table></div>
+</section>
+
+<section id="skille">
+<h2>Drugie Tchnienie</h2>
+<p>Jedyne trwałe ulepszenie ze sklepu: kupujesz je raz, nie da się go zdjąć ani sprzedać. Znajdziesz je w każdej kategorii przedmiotów poza Bronią. Skała Zdrowia, Woda Życia i Kolczuga-ulepszenie zostały usunięte, a HP i pancerz dają teraz przedmioty Tank i Wojownik oraz poziom postaci.</p>
+<div class="tablewrap"><table>
+<tr><th>Ikona</th><th>Skill</th><th>Cena</th><th>Efekt</th><th>Limit</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="skills" data-id="secondWind"></span></td><td>Drugie Tchnienie</td><td>275 $</td><td>zabójstwo leczy 25% maks. HP i many</td><td>jednorazowy</td></tr>
+</table></div>
+</section>
+
+<section id="przeciwnicy">
+<h2>Przeciwnicy — 50 poziomów</h2>
+<p>Bossowie (<span class="boss">wyróżnieni</span>) pojawiają się co 5 poziomów i mają przy każdej kolejnej fali o 8% więcej HP i o 5% wyższe obrażenia oraz wyższą nagrodę.</p>
+<div class="tablewrap"><table>
+<tr><th>Lvl</th><th>Nazwa</th><th>HP</th><th>DMG</th><th>Sz.atk</th><th>Krytyk</th><th>Trafienie gracza</th><th>Unik</th><th>Panc.</th><th>Odp.mag.</th><th>Pen.panc.</th><th>Fale</th><th>Nagroda</th></tr>
+<tr><td>1</td><td>Menel spod Żabki</td><td>30</td><td>3</td><td>25</td><td>2</td><td>95</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1</td><td>5</td></tr>
+<tr><td>2</td><td>Sebix z osiedla</td><td>40</td><td>4</td><td>28</td><td>2</td><td>93</td><td>6</td><td>0</td><td>0</td><td>0</td><td>1</td><td>5</td></tr>
+<tr><td>3</td><td>Kukriniarz</td><td>50</td><td>5</td><td>30</td><td>3</td><td>92</td><td>8</td><td>0</td><td>0</td><td>0</td><td>1</td><td>10</td></tr>
+<tr><td>4</td><td>Sąsiad</td><td>65</td><td>6</td><td>32</td><td>3</td><td>90</td><td>10</td><td>5</td><td>0</td><td>0</td><td>1</td><td>15</td></tr>
+<tr><td class="boss">5</td><td class="boss">Kierownik Żabki</td><td>80</td><td>10</td><td>38</td><td>5</td><td>88</td><td>12</td><td>10</td><td>5</td><td>0</td><td>1</td><td>25</td></tr>
+<tr><td>6</td><td>Shaco</td><td>90</td><td>6</td><td>34</td><td>4</td><td>88</td><td>10</td><td>5</td><td>0</td><td>0</td><td>1</td><td>30</td></tr>
+<tr><td>7</td><td>Speedrunner Minecraft</td><td>95</td><td>8</td><td>36</td><td>5</td><td>86</td><td>12</td><td>8</td><td>0</td><td>0</td><td>1</td><td>35</td></tr>
+<tr><td>8</td><td>MrBeast</td><td>110</td><td>10</td><td>38</td><td>5</td><td>84</td><td>15</td><td>10</td><td>5</td><td>0</td><td>1</td><td>40</td></tr>
+<tr><td>9</td><td>Eggman po 3 energetykach</td><td>120</td><td>12</td><td>40</td><td>6</td><td>82</td><td>18</td><td>12</td><td>5</td><td>0</td><td>1</td><td>45</td></tr>
+<tr><td class="boss">10</td><td class="boss">Peter Griffin</td><td>150</td><td>15</td><td>45</td><td>7</td><td>80</td><td>20</td><td>15</td><td>10</td><td>0</td><td>1</td><td>75</td></tr>
+<tr><td>11</td><td>Patrick Star</td><td>135</td><td>18</td><td>42</td><td>7</td><td>78</td><td>22</td><td>15</td><td>10</td><td>1</td><td>2</td><td>35</td></tr>
+<tr><td>12</td><td>Red Baron Corki</td><td>150</td><td>20</td><td>44</td><td>8</td><td>76</td><td>24</td><td>18</td><td>10</td><td>2</td><td>2</td><td>45</td></tr>
+<tr><td>13</td><td>Yone</td><td>175</td><td>22</td><td>46</td><td>10</td><td>74</td><td>26</td><td>20</td><td>15</td><td>5</td><td>2</td><td>55</td></tr>
+<tr><td>14</td><td>Windows 11</td><td>200</td><td>25</td><td>48</td><td>10</td><td>72</td><td>28</td><td>22</td><td>15</td><td>6</td><td>2</td><td>65</td></tr>
+<tr><td class="boss">15</td><td class="boss">Żabka</td><td>300</td><td>30</td><td>52</td><td>12</td><td>70</td><td>30</td><td>25</td><td>20</td><td>7</td><td>2</td><td>80</td></tr>
+<tr><td>16</td><td>Ash Ketchum</td><td>280</td><td>35</td><td>50</td><td>12</td><td>68</td><td>32</td><td>25</td><td>20</td><td>10</td><td>2</td><td>80</td></tr>
+<tr><td>17</td><td>Malphite</td><td>320</td><td>40</td><td>52</td><td>13</td><td>66</td><td>34</td><td>28</td><td>20</td><td>11</td><td>2</td><td>95</td></tr>
+<tr><td>18</td><td>Akali</td><td>400</td><td>45</td><td>54</td><td>15</td><td>64</td><td>36</td><td>30</td><td>25</td><td>11</td><td>2</td><td>115</td></tr>
+<tr><td>19</td><td>Dis gdy JD</td><td>500</td><td>50</td><td>56</td><td>15</td><td>62</td><td>38</td><td>32</td><td>25</td><td>12</td><td>2</td><td>125</td></tr>
+<tr><td class="boss">20</td><td class="boss">Adam Smasher</td><td>750</td><td>60</td><td>60</td><td>18</td><td>60</td><td>40</td><td>35</td><td>30</td><td>15</td><td>2</td><td>150</td></tr>
+<tr><td>21</td><td>Hatsune Miku</td><td>800</td><td>65</td><td>58</td><td>18</td><td>58</td><td>42</td><td>35</td><td>30</td><td>16</td><td>2</td><td>150</td></tr>
+<tr><td>22</td><td>Intel Core 2 Duo E8400</td><td>925</td><td>70</td><td>60</td><td>20</td><td>56</td><td>44</td><td>38</td><td>30</td><td>17</td><td>2</td><td>170</td></tr>
+<tr><td>23</td><td>Yasuo 0/10</td><td>1100</td><td>80</td><td>62</td><td>22</td><td>54</td><td>46</td><td>40</td><td>35</td><td>18</td><td>2</td><td>190</td></tr>
+<tr><td>24</td><td>Leon z RE</td><td>1300</td><td>90</td><td>64</td><td>22</td><td>52</td><td>48</td><td>42</td><td>35</td><td>20</td><td>2</td><td>230</td></tr>
+<tr><td class="boss">25</td><td class="boss">Dante z DMC</td><td>1400</td><td>110</td><td>68</td><td>25</td><td>50</td><td>50</td><td>45</td><td>40</td><td>25</td><td>2</td><td>300</td></tr>
+<tr><td>26</td><td>Kim Jong Goon</td><td>1700</td><td>120</td><td>66</td><td>25</td><td>48</td><td>52</td><td>45</td><td>40</td><td>27</td><td>3</td><td>200</td></tr>
+<tr><td>27</td><td>Mariusz Pudzianowski</td><td>1800</td><td>130</td><td>67</td><td>28</td><td>46</td><td>54</td><td>50</td><td>40</td><td>27</td><td>3</td><td>240</td></tr>
+<tr><td>28</td><td>Vergil z DMC</td><td>2000</td><td>150</td><td>68</td><td>30</td><td>44</td><td>56</td><td>52</td><td>45</td><td>27</td><td>3</td><td>250</td></tr>
+<tr><td>29</td><td>Linux</td><td>2200</td><td>170</td><td>69</td><td>30</td><td>42</td><td>58</td><td>55</td><td>45</td><td>30</td><td>3</td><td>260</td></tr>
+<tr><td class="boss">30</td><td class="boss">Song So-Mi (Songbird)</td><td>2200</td><td>200</td><td>70</td><td>32</td><td>40</td><td>60</td><td>58</td><td>50</td><td>30</td><td>3</td><td>290</td></tr>
+<tr><td>31</td><td>Samsung Galaxy S22</td><td>2300</td><td>230</td><td>70</td><td>32</td><td>38</td><td>62</td><td>58</td><td>50</td><td>30</td><td>3</td><td>280</td></tr>
+<tr><td>32</td><td>6pek</td><td>2550</td><td>260</td><td>71</td><td>34</td><td>36</td><td>64</td><td>60</td><td>55</td><td>30</td><td>3</td><td>320</td></tr>
+<tr><td>33</td><td>Eminem</td><td>2700</td><td>300</td><td>72</td><td>35</td><td>34</td><td>66</td><td>62</td><td>55</td><td>35</td><td>3</td><td>350</td></tr>
+<tr><td>34</td><td>Gordon Freeman</td><td>3000</td><td>350</td><td>73</td><td>35</td><td>32</td><td>68</td><td>65</td><td>60</td><td>35</td><td>3</td><td>375</td></tr>
+<tr><td class="boss">35</td><td class="boss">Gabe Newell</td><td>3100</td><td>400</td><td>75</td><td>38</td><td>30</td><td>70</td><td>68</td><td>65</td><td>35</td><td>3</td><td>400</td></tr>
+<tr><td>36</td><td>GTX 1080 Ti</td><td>3500</td><td>450</td><td>74</td><td>38</td><td>28</td><td>72</td><td>68</td><td>65</td><td>40</td><td>3</td><td>330</td></tr>
+<tr><td>37</td><td>Walter White</td><td>3750</td><td>500</td><td>75</td><td>40</td><td>26</td><td>74</td><td>70</td><td>70</td><td>40</td><td>3</td><td>380</td></tr>
+<tr><td>38</td><td>Owcacejk</td><td>4000</td><td>600</td><td>76</td><td>40</td><td>24</td><td>76</td><td>72</td><td>70</td><td>40</td><td>3</td><td>390</td></tr>
+<tr><td>39</td><td>Draven</td><td>4700</td><td>700</td><td>80</td><td>40</td><td>22</td><td>78</td><td>75</td><td>75</td><td>40</td><td>3</td><td>400</td></tr>
+<tr><td class="boss">40</td><td class="boss">Steam Support</td><td>5200</td><td>650</td><td>90</td><td>40</td><td>20</td><td>80</td><td>80</td><td>80</td><td>50</td><td>5</td><td>500</td></tr>
+<tr><td>41</td><td>Kubełek kurczaka KFC</td><td>5100</td><td>750</td><td>80</td><td>45</td><td>20</td><td>80</td><td>85</td><td>75</td><td>45</td><td>4</td><td>470</td></tr>
+<tr><td>42</td><td>Red Bull</td><td>5400</td><td>800</td><td>80</td><td>45</td><td>20</td><td>75</td><td>90</td><td>90</td><td>45</td><td>4</td><td>490</td></tr>
+<tr><td>43</td><td>Geralt z Rivii</td><td>6000</td><td>850</td><td>81</td><td>40</td><td>19</td><td>80</td><td>90</td><td>100</td><td>50</td><td>4</td><td>510</td></tr>
+<tr><td>44</td><td>Kassadin (L9)</td><td>6200</td><td>875</td><td>83</td><td>50</td><td>18</td><td>81</td><td>95</td><td>99</td><td>50</td><td>4</td><td>540</td></tr>
+<tr><td class="boss">45</td><td class="boss">Nero z DMC</td><td>6150</td><td>800</td><td>85</td><td>50</td><td>18</td><td>82</td><td>100</td><td>100</td><td>55</td><td>5</td><td>600</td></tr>
+<tr><td>46</td><td>Thanos</td><td>6500</td><td>925</td><td>85</td><td>50</td><td>18</td><td>82</td><td>99</td><td>100</td><td>55</td><td>4</td><td>570</td></tr>
+<tr><td>47</td><td>Steve z Minecraft</td><td>7000</td><td>950</td><td>86</td><td>52</td><td>17</td><td>83</td><td>110</td><td>110</td><td>56</td><td>4</td><td>625</td></tr>
+<tr><td>48</td><td>Tuco Salamanca</td><td>7600</td><td>975</td><td>87</td><td>53</td><td>17</td><td>83</td><td>115</td><td>105</td><td>57</td><td>4</td><td>675</td></tr>
+<tr><td>49</td><td>Kot Błażej Prezydent</td><td>8400</td><td>999</td><td>89</td><td>54</td><td>16</td><td>84</td><td>120</td><td>115</td><td>59</td><td>4</td><td>700</td></tr>
+<tr><td class="boss">50</td><td class="boss">Scuttle Crab</td><td>8500</td><td>900</td><td>90</td><td>55</td><td>15</td><td>85</td><td>125</td><td>125</td><td>60</td><td>5</td><td>750</td></tr>
+</table></div>
+<p class="note">Od poziomu 11 wrogowie pierwszy raz zaczynają mieć penetrację pancerza; od ok. poziomu 40 zaczyna się wyraźny „late game" — HP 5000–8500, obrażenia 650–1000, pancerz/odporność 100–125.</p>
+</section>
+
+<section id="fale">
+<h2>Fale, poziomy, ucieczka i śmierć</h2>
+<p>Poziom może mieć kilka fal tego samego przeciwnika — kolejna fala bossa ma o 8% więcej HP, a jego obrażenia rosną o 5% między falami. Po ostatniej fali gracz awansuje o poziom i dostaje +1 Skin Point.</p>
+<p><b>Rodzaje obrażeń przeciwników:</b> każdy przeciwnik w kampanii zadaje 80% obrażeń fizycznych i 20% magicznych. Fizyczną część zmniejsza twój pancerz, a magiczną twoja odporność magiczna. Przykład: wróg z 500 obrażeń na trafienie zadaje 400 fizycznych i 100 magicznych. Przy 100 pancerza i 100 odporności magicznej dostajesz 200 + 50 = 250 obrażeń.</p>
+<p><b>Ucieczka:</b> dostępna raz na poziom, przywraca 50% maks. HP i 50% maks. many, kończy walkę natychmiast.</p>
+<p><b>Śmierć</b> (HP ≤ 0): ekran śmierci oferuje „Nową grę" (reset postaci) lub „Cofnięcie do stanu sprzed walki" — przywraca migawkę gracza z początku tej konkretnej walki, cofając wszystkie zakupy/zmiany dokonane w jej trakcie.</p>
+</section>
+
+<section id="arena">
+<h2>Arena</h2>
+<p>Arena odblokowuje się na <b>30. poziomie</b>. Przycisk <b>🏟️ Arena</b> stoi obok „Graj” w menu głównym (po ukończeniu 50. poziomu „Graj” zastępują <a href="#pojedynki">Pojedynki</a>) i otwiera okno wyboru trudności z orientacyjnym zarobkiem. To osobny tryb: nie daje awansu, Skin Pointów ani nie zmienia postępu kampanii — wygrana daje wyłącznie pieniądze.</p>
+
+<h3>Jak działa walka</h3>
+<ul>
+  <li><b>Osobna pula HP i many:</b> do areny wchodzisz z pełnym HP i pełną maną, niezależnie od stanu w kampanii. Po walce (wygrana, porażka lub ucieczka) wraca stan kampanii: HP, mana, lifesteal z mikstur, Drugie Tchnienie i stosy Księgi Adeptów.</li>
+  <li><b>Mikstury</b> użyte w arenie pozostają zużyte.</li>
+  <li><b>Battle Bot jest skrojony pod Twój build.</b> Jego HP wynika z Twoich obrażeń, a jego obrażenia z Twojego maks. HP, więc arena nie staje się trywialna tylko dlatego, że masz mocniejszy sprzęt. Liczy się to, jak sprawnie walczysz.</li>
+  <li>Pancerz, odporność na magię i penetrację bot dostaje jak przeciwnik z Twojego poziomu w kampanii (maks. poziom 50).</li>
+</ul>
+
+<h3>Poziomy trudności</h3>
+<div class="tablewrap"><table>
+<tr><th>Tryb</th><th>Fale</th><th>Trafień do zabicia</th><th>Unik bota</th><th>Szansa ataku bota</th><th>Krytyk bota</th><th>Obrażenia (1. fala)</th><th>Skalowanie między falami</th><th>Mnożnik nagrody</th></tr>
+<tr><td>Łatwy</td><td>2</td><td>3</td><td>20%</td><td>×0,75</td><td>×0,50</td><td>13% maks. HP</td><td>brak</td><td>×0,10</td></tr>
+<tr><td>Średni</td><td>3</td><td>3</td><td>30%</td><td>×0,90</td><td>×0,75</td><td>10% maks. HP</td><td>HP ×1,15, obrażenia ×1,10</td><td>×0,20</td></tr>
+<tr><td>Trudny</td><td>4</td><td>4</td><td>40%</td><td>×1,00</td><td>×1,00</td><td>5,5% maks. HP</td><td>HP ×1,15, obrażenia ×1,10</td><td>×0,35</td></tr>
+</table></div>
+<p class="note">Szansa ataku i krytyk bota to wartości przeciwnika z Twojego poziomu pomnożone przez mnożnik trybu (szansa ataku maks. 75%, krytyk maks. 40%). „Trafień do zabicia” to liczba Twoich przeciętnych trafień (z uwzględnieniem pancerza bota, szansy na trafienie i krytyka), których potrzeba na pierwszą falę; HP bota nigdy nie jest niższe niż 1,5 × Twój największy pojedynczy cios.</p>
+
+<h3>Nagroda</h3>
+<p>Nagroda jest wypłacana <b>jednorazowo po wygraniu ostatniej fali</b>. Zależy od trybu i od tego, jak dobrze poszła walka w porównaniu z oczekiwaniami dla Twojego buildu:</p>
+<div class="formula">bazowa = nagrodaPrzeciwnika(poziom) × fale(poziom) × mnożnikTrybu
+ocenaObrażeń = 1 / (1 + (otrzymaneObrażenia / oczekiwane)²)
+ocenaCzasu = 1 / (1 + (tury / oczekiwaneTury)²)
+mnożnikWykonania = 0,4 + 1,2 × (0,5 × ocenaObrażeń + 0,5 × ocenaCzasu)
+nagroda = round(bazowa × mnożnikWykonania)</div>
+<ul>
+  <li>Walka dokładnie „na oczekiwanym poziomie” (tyle obrażeń i tur, ile zakłada model) daje mnożnik <b>×1,0</b>. To właśnie wartość pokazana w oknie wyboru jako „możliwy zarobek: około…”.</li>
+  <li>Mniej otrzymanych obrażeń i mniej tur podnoszą mnożnik (maks. ×1,6), a długa i bolesna walka obniża go (min. ×0,4).</li>
+  <li>Do tur liczą się ataki i umiejętności kończące turę. Mikstury i umiejętność broni (Spacja) tury nie zajmują, więc nie pogarszają wyniku czasu.</li>
+</ul>
+<div class="tablewrap"><table>
+<tr><th>Przykład: poziom 30</th><th>Łatwy</th><th>Średni</th><th>Trudny</th></tr>
+<tr><td>Nagroda bazowa (290 × 3 fale = 870 $)</td><td>87 $</td><td>174 $</td><td>305 $</td></tr>
+</table></div>
+<p class="note">Kwoty w tabeli to wynik przy mnożniku wykonania ×1,0, czyli typowa walka. Przy lepszej walce zarobisz więcej, przy gorszej mniej. Im wyższy poziom, tym wyższa nagroda bazowa (wartości w tabeli przeciwników).</p>
+
+<h3>Cooldown, ucieczka i porażka</h3>
+<div class="tablewrap"><table>
+<tr><th>Sytuacja</th><th>Nagroda</th><th>Cooldown areny</th><th>Dodatkowe skutki</th></tr>
+<tr><td>Wygrana</td><td>tak</td><td>8 minut</td><td>—</td></tr>
+<tr><td>Porażka (HP ≤ 0)</td><td>brak</td><td>8 minut</td><td>bez ekranu śmierci i bez „Nowej gry” — kampania pozostaje nietknięta</td></tr>
+<tr><td>Ucieczka</td><td>brak</td><td>nie uruchamia się</td><td>blokada ponownego wejścia na 30 sekund; bez leczenia i bez zużywania ucieczki z kampanii</td></tr>
+</table></div>
+<p>Przycisk ucieczki w arenie jest zawsze aktywny (nie obowiązuje limit „raz na poziom”), ale w przeciwieństwie do ucieczki w kampanii <b>nie przywraca HP ani many</b>. Cooldown jest naliczany <b>już w momencie wejścia do areny</b> (po zakończeniu walki liczy się od nowa od jej końca). Trafia do kodu zapisu, a jego kopia jest też pamiętana w przeglądarce, więc odświeżenie strony w trakcie walki i wczytanie starszego zapisu go nie omija. Taka przerwana walka kończy się bez nagrody. Jedyny wyjątek to ucieczka, która cooldownu nie wlicza.</p>
+<p class="note">W obliczeniach areny nie uwzględniono wszystkich możliwości (np. aktywnych umiejętności poza rotacją maga), więc przy niektórych buildach walka bywa szybsza, niż zakłada model, a mnożnik wykonania będzie wtedy powyżej ×1,0.</p>
+</section>
+
+<section id="pojedynki">
+<h2>Pojedynki 1v1</h2>
+<p>Pojedynki to tryb dla graczy, którzy <b>ukończyli 50. poziom</b> (czyli mają poziom 51). Po jego ukończeniu pojawia się komunikat z gratulacjami, a przycisk <b>🥊 Pojedynki</b> zajmuje w menu głównym miejsce przycisku „Graj”. Walczysz na żywo z innym graczem — własnym buildem, według zasad turowych zbliżonych do areny.</p>
+
+<h3>Wymagania</h3>
+<ul>
+  <li><b>Logowanie przez Discord.</b> Twoim nickiem w pojedynkach jest nick z Discorda.</li>
+  <li><b>Zapis w chmurze z poziomem 51+.</b> W pojedynku walczy build z ostatniego zapisu w chmurze, a nie ten z lokalnej gry. Po każdej zmianie ekwipunku, umiejętności czy skina kliknij w Opcjach <b>Zapisz w chmurze</b>, inaczej przeciwnik zobaczy starszą wersję postaci.</li>
+  <li>Przeciwnik nie widzi Twoich pieniędzy, Punktów Skinów, skinów, motywu ani danych osiągnięć i cooldownów areny — do walki trafiają tylko statystyki bojowe.</li>
+</ul>
+
+<h3>Lobby i szukanie przeciwnika</h3>
+<ul>
+  <li>Okno pojedynków pokazuje Twoją kartę gracza (klasa, poziom, data ostatniego zapisu w chmurze), przycisk <b>➕ Utwórz lobby</b> i listę otwartych lobby. Każde lobby ma ikonę klasy hosta, nick, poziom i czas oczekiwania. Lista odświeża się co 5 sekund, a przyciskiem <b>↻ Odśwież</b> zrobisz to od razu.</li>
+  <li><b>Utworzenie lobby:</b> host czeka w oknie na przeciwnika. Lobby jest widoczne na liście tylko wtedy, gdy okno jest otwarte — zamknięcie okna albo przycisk <b>Zamknij lobby</b> je usuwa, a lobby bez sygnału od hosta znika z listy po około 30 sekundach.</li>
+  <li><b>Dołączanie:</b> kliknij <b>⚔️ Walcz</b> przy wybranym lobby. Host dostaje prośbę i ma <b>20 sekund</b> na jej akceptację lub odrzucenie. W tym czasie lobby oznaczone jest jako „Zajęte”. Prośbę możesz wycofać przyciskiem <b>Wycofaj prośbę</b>.</li>
+  <li>Możesz mieć tylko jedną walkę naraz. Jeśli odświeżysz stronę w trakcie pojedynku, w oknie pojawi się przycisk <b>↩️ Wróć do trwającej walki</b>.</li>
+</ul>
+
+<h3>Przebieg walki</h3>
+<ul>
+  <li><b>Tryb Casual — best of 3.</b> Wygrywa ten, kto pierwszy wygra 2 rundy. Tryb rankingowy jest dopiero planowany.</li>
+  <li>Walka jest turowa: gracze wykonują ruchy naprzemiennie. Kto zaczyna pierwszą rundę, jest losowane, a każdą kolejną zaczyna <b>przegrany poprzedniej rundy</b>.</li>
+  <li><b>Start każdej rundy:</b> pełne HP, <b>+50% maks. many</b> (w 1. rundzie pełna mana), wyzerowane cooldowny i efekty oraz stosy Księgi Adeptów. Pula Overkill Zabójcy jest ustawiana tylko raz, na początku pojedynku (patrz niżej).</li>
+  <li><b>Limit czasu:</b> na ruch masz <b>30 sekund</b> (na początku walki dochodzi 15 sekund na wczytanie). Brak ruchu w tym czasie oznacza przegraną całej walki.</li>
+  <li>Przycisk <b>🏳️ Poddaj się</b> kończy walkę porażką.</li>
+  <li>Walkę liczy ten sam silnik u obu graczy na tych samych danych, więc wynik jest identyczny po obu stronach. Gdyby jednak wykryto rozjazd symulacji, walka jest <b>anulowana bez wyniku</b>.</li>
+</ul>
+
+<h3>Dostępne akcje</h3>
+<ul>
+  <li><b>Judgement Cut (Yamato) ma w pojedynku stały próg egzekucji:</b> 8% HP przeciwnika w 1. rundzie i +1 punkt procentowy w każdej kolejnej (9% w 2., 10% w 3.). Próg z kampanii (rosnący z każdym użyciem) ani stosy za co 6. trafienie nie mają tu wpływu, a po pojedynku nic nie wraca do Twojej postaci.</li>
+  <li>Zwykły atak bronią (nie ma go Mag, tak samo jak w kampanii), umiejętności klasowe (koszt many i cooldowny jak w kampanii, z wyjątkami z tabeli „Różnice względem kampanii”) oraz aktywne umiejętności broni unikalnych: <b>Judgement Cut</b> (Yamato) i wystrzał puli <b>Pistoletu Jhina</b>.</li>
+  <li><b>Mikstur nie ma</b> — w pojedynku nie można ich używać. Nie ma też ucieczki.</li>
+  <li>Przeciwnik <b>nie kontratakuje automatycznie</b> — zadaje obrażenia tylko własnymi ruchami. Zatrucie i pnącza ranią przeciwnika na początku jego tury, a ogłuszenie sprawia, że traci on swoją turę.</li>
+  <li>Umiejętność broni oraz Sen no Kata i Absolutne Skupienie <b>nie zużywają tury</b>.</li>
+  <li>Jeśli nie masz żadnej dostępnej akcji (np. brak many i cooldowny), możesz użyć <b>Pomiń turę</b>.</li>
+</ul>
+<div class="tablewrap"><table>
+<tr><th>Klawisz</th><th>Akcja w pojedynku</th></tr>
+<tr><td>Q</td><td>Zwykły atak (dla Maga — 1. umiejętność)</td></tr>
+<tr><td>Q/W/E/R (Mag), W/E/R (pozostałe klasy)</td><td>Umiejętności klasowe</td></tr>
+<tr><td>Spacja</td><td>Umiejętność broni unikalnej</td></tr>
+<tr><td>P</td><td>Pomiń turę (gdy nie masz innej akcji)</td></tr>
+</table></div>
+
+<h3>Różnice względem kampanii</h3>
+<p>Poza poniższymi zmianami umiejętności i broni działają tak samo jak w kampanii i arenie. Opisy i koszty w oknie pojedynku pokazują już wartości pojedynkowe.</p>
+<div class="tablewrap"><table>
+<tr><th>Umiejętność</th><th>Kampania / arena</th><th>Pojedynek</th></tr>
+<tr><td>Zabójcze Pnącza (Mag)</td><td>ogłuszenie 3 tury</td><td>ogłuszenie 1 tura (obrażenia nadal 3 tury)</td></tr>
+<tr><td>Gwiezdne Uderzenie (Mag)</td><td>60 + 90% AP, 100 many</td><td>60 + 80% AP, 125 many</td></tr>
+<tr><td>Śmiertelne Lustro (Mag)</td><td>blok śmiertelnego ciosu 99%, odnowienie 5 tur; działa tylko na kontratak w turze rzucenia</td><td>blok śmiertelnego ciosu 65%, odnowienie 6 tur; czeka na atak przeciwnika i znika po Twoim kolejnym ruchu</td></tr>
+<tr><td>Kamienny Bastion (Tank)</td><td>ogłuszenie 2 tury</td><td>ogłuszenie 1 tura</td></tr>
+<tr><td>Strzała Mrozu (Łucznik)</td><td>ogłuszenie 3 tury</td><td>ogłuszenie 2 tury</td></tr>
+<tr><td>Pula Overkill (Zabójca)</td><td>rośnie z nadwyżki obrażeń zadanych przy dobijaniu wrogów</td><td>start pojedynku z pulą równą 15% maks. HP przeciwnika, bez zerowania między rundami</td></tr>
+</table></div>
+
+<h3>Nagrody</h3>
+<p>Pojedynki nie dają pieniędzy ani Punktów Skinów i nie zmieniają postępu kampanii — liczy się wyłącznie wynik walki.</p>
+<p class="note">Szczegóły dotyczące zapisu w chmurze znajdziesz w sekcji <a href="#zapis">Zapis, konto i opcje</a>. Balans umiejętności i broni jest wspólny z kampanią i areną, poza zmianami z tabeli „Różnice względem kampanii”.</p>
+</section>
+
+<section id="sklep">
+<h2>Sklep i ekwipunek</h2>
+<ul>
+<li>Zakup posiadanej już broni jedynie ją wyposaża — nie kupuje drugi raz.</li>
+<li>Zmiana broni automatycznie chowa poprzednio wyposażoną (o ile nie jest to „Pięści") z powrotem do ekwipunku.</li>
+<li>Mag nie widzi zakładek Bronie/AD w sklepie.</li>
+<li>Zakup przedmiotu AD/magicznego wyposaża go automatycznie, jeśli jest wolny slot — inaczej trafia do ekwipunku nieaktywny.</li>
+<li>Sprzedaż: bronie 40% ceny, przedmioty AD 40% ceny, przedmioty magiczne 40% zapłaconej ceny, skiny 50% kosztu w SP. Sprzedaż w Ekwipunku, a sprzedany wyposażony przedmiot traci efekt od razu.</li>
+<li>W sklepie przy nagłówkach przedmiotów AD i AP widać licznik zajętych slotów, np. „Sloty: 3/8”. W Ekwipunku wszystkie przedmioty (AD i AP) są na jednej liście, a nad nią widać liczbę wolnych slotów, np. „Wolne sloty — AD: 3 | AP: 1”.</li>
+<li>Pięści i bronie unikalne nie mogą być sprzedane.</li>
+</ul>
+</section>
+
+<section id="skiny">
+<h2>Skiny</h2>
+<p>21 skinów (w tym domyślny „Patyczak") o rzadkościach:
+<span class="rarity-basic">basic</span>,
+<span class="rarity-rare">rare</span>,
+<span class="rarity-epic">epic</span>,
+<span class="rarity-mythic">mythic</span>,
+<span class="rarity-legendary">legendary</span>,
+<span class="rarity-ultimate">ultimate</span>
+i <span class="rarity-secret">secret</span>.
+Większość skinów kupisz za Skin Pointy, część należy do tematycznych kolekcji (np. Cyberpunk Edgerunners, Dragon Ball, Genshin Impact, Doki Doki Literature Club). Czysto kosmetyczne — bez wpływu na statystyki.</p>
+</section>
+
+<section id="osiagniecia">
+<h2>Osiągnięcia</h2>
+<p>Osiągnięcia są <b>tylko online</b>: zdobywasz je, gdy jesteś zalogowany przez Discord, i <b>tylko na postaci założonej po zalogowaniu</b> (Nowa gra). Zapisy założone wcześniej oraz gra jako gość ich nie liczą. Listę znajdziesz pod przyciskiem <b>🏆 Osiągnięcia</b> obok „Zmień skina”. Lista odblokowanych osiągnięć należy do konta Discord, więc nie znika razem z postacią.</p>
+<h3>Trudność i nagrody</h3>
+<ul>
+<li>Kolor ramki oznacza trudność: 🟦 <b>Łatwe</b> (niebieska), 🟧 <b>Średnie</b> (pomarańczowa), 🟥 <b>Trudne</b> (czerwona).</li>
+<li>Za każde <b>Trudne</b> dostajesz <b>1 Skin Point</b>. Za legendarne osiągnięcie <b>Legenda Wpierdolu</b> (odblokowanie wszystkich pozostałych osiągnięć) dostajesz <b>5 Skin Pointów</b>.</li>
+<li>SP z osiągnięć jest przypisany do konta: każda nowa postać założona po zalogowaniu dostaje od razu całość dotychczas zarobionego SP.</li>
+<li>Poza SP osiągnięcia nic nie dają — nie zmieniają statystyk.</li>
+<li>Istnieją też <b>3 ukryte osiągnięcia</b> (w grze widać je jako „???”, dopóki ich nie zdobędziesz).</li>
+</ul>
+<h3>Postęp</h3>
+<div class="tablewrap"><table>
+<tr><th>Osiągnięcie</th><th>Trudność</th><th>Warunek</th></tr>
+<tr><td>Pierwsza krew</td><td>🟦 Łatwe</td><td>Wygraj pierwszą walkę.</td></tr>
+<tr><td>Początek Legendy</td><td>🟦 Łatwe</td><td>Pokonaj 3 pierwszych bossów (poziomy 5, 10 i 15).</td></tr>
+<tr><td>Krab Zwycięzca</td><td>🟥 Trudne (+1 SP)</td><td>Pokonaj Scuttle Crab (poziom 50).</td></tr>
+<tr><td>Wszechstronny</td><td>🟥 Trudne (+1 SP)</td><td>Ukończ poziom 50 każdą z 5 klas.</td></tr>
+</table></div>
+<h3>Wyzwania</h3>
+<div class="tablewrap"><table>
+<tr><th>Osiągnięcie</th><th>Trudność</th><th>Warunek</th></tr>
+<tr><td>Pięściarz</td><td>🟧 Średnie</td><td>Dojdź do poziomu 5 tylko na Pięściach (nie dotyczy Maga).</td></tr>
+<tr><td>„I fear no man.”</td><td>🟥 Trudne (+1 SP)</td><td>Ukończ 5 poziomów z rzędu bez użycia ucieczki.</td></tr>
+<tr><td>Bez mikstur</td><td>🟦 Łatwe</td><td>Ukończ 10 poziomów z rzędu bez żadnej mikstury.</td></tr>
+<tr><td>Nietykalny</td><td>🟥 Trudne (+1 SP)</td><td>Wygraj walkę z bossem, kończąc ją z pełnym HP.</td></tr>
+<tr><td>Edgerunner</td><td>🟧 Średnie</td><td>Wygraj walkę z mniej niż 15% HP.</td></tr>
+<tr><td>OneTap</td><td>🟧 Średnie</td><td>Pokonaj falę w dowolnej walce jednym atakiem.</td></tr>
+<tr><td>Leniwiec</td><td>🟦 Łatwe</td><td>Ukończ 5 poziomów w Auto-walce na 3×.</td></tr>
+<tr><td>Hardcore</td><td>🟥 Trudne (+1 SP)</td><td>Pokonaj choć jedną falę poziomu 50 bez żadnych przedmiotów AD ani AP (broń i umiejętności klasowe są dozwolone). Nie musisz przeżyć tej walki.</td></tr>
+</table></div>
+<h3>Klasowe</h3>
+<div class="tablewrap"><table>
+<tr><th>Osiągnięcie</th><th>Trudność</th><th>Warunek</th></tr>
+<tr><td>Zabójca</td><td>🟦 Łatwe</td><td>Odpal 10 razy ignorowanie pancerza z Overkilla.</td></tr>
+<tr><td>Mag</td><td>🟧 Średnie</td><td>Wygraj walkę, kończąc z mniej niż 10% many.</td></tr>
+<tr><td>Tank</td><td>🟧 Średnie</td><td>Zdetonuj Gniew na ponad 450 obrażeń naraz.</td></tr>
+<tr><td>Samurai</td><td>🟥 Trudne (+1 SP)</td><td>Traf 12 ataków pod rząd w jednej walce.</td></tr>
+<tr><td>Łucznik</td><td>🟧 Średnie</td><td>Zadaj 5 ataków wzmocnionych Nieokiełznanym Skupieniem w jednej walce.</td></tr>
+</table></div>
+<h3>Arena</h3>
+<div class="tablewrap"><table>
+<tr><th>Osiągnięcie</th><th>Trudność</th><th>Warunek</th></tr>
+<tr><td>Do areny, marsz</td><td>🟦 Łatwe</td><td>Wygraj pierwszą walkę w Arenie (odblokowanie na poziomie 30).</td></tr>
+<tr><td>Trzy korony</td><td>🟦 Łatwe</td><td>Wygraj w Arenie na Łatwym, Średnim i Trudnym.</td></tr>
+<tr><td>Gladiator</td><td>🟧 Średnie</td><td>Wygraj w Arenie na Trudnym z pełnym zdrowiem.</td></tr>
+</table></div>
+<h3>Kolekcja</h3>
+<div class="tablewrap"><table>
+<tr><th>Osiągnięcie</th><th>Trudność</th><th>Warunek</th></tr>
+<tr><td>Hazardzista</td><td>🟧 Średnie</td><td>Wylosuj Yamato albo Pistolet Jhina z lootboxa.</td></tr>
+<tr><td>Kolekcjoner unikatów</td><td>🟧 Średnie</td><td>Miej oba: Yamato i Pistolet Jhina.</td></tr>
+<tr><td>Szafiarz</td><td>🟧 Średnie</td><td>Posiadaj 8 skórek.</td></tr>
+</table></div>
+<h3>Zasady szczegółowe</h3>
+<ul>
+<li>„W jednej walce” i „pod rząd” znaczy: w obrębie całego poziomu (wszystkich fal), bez ucieczki i bez śmierci. Po ucieczce lub śmierci poziom zaczyna się od nowa, a serie i liczniki walki się zerują.</li>
+<li><b>Pięściarz</b> i <b>Hardcore</b> sprawdzają ekwipunek na początku każdej walki (także w Arenie). Kupienie przedmiotu bez założenia go nie psuje osiągnięcia. Mikstury, ulepszenia sklepowe i umiejętności klasowe nie są „przedmiotami”.</li>
+<li><b>Bez mikstur</b> to 10 poziomów z rzędu; użycie mikstury (także przez Auto-walkę) zeruje serię.</li>
+<li><b>„I fear no man.”</b> to 5 poziomów z rzędu (dowolnych) bez ucieczki. Użycie ucieczki zeruje serię, a poziom, na którym do tego doszło, się nie liczy — liczysz od następnego. Śmierć serii nie zeruje.</li>
+<li><b>Leniwiec</b>: poziom musi być w całości ukończony w Auto-walce na prędkości 3×, bez żadnej ręcznej akcji.</li>
+<li><b>Edgerunner</b> i <b>Mag</b> liczą HP lub manę w chwili ostatniego zabójstwa, bez premii z umiejętności Drugie Tchnienie.</li>
+<li><b>OneTap</b>: dotyczy dowolnej fali, nie tylko bossa. Wróg miał pełne HP tuż przed ostatnią akcją, a ta akcja go zabiła.</li>
+<li><b>Nietykalny</b>: liczy się HP w chwili pokonania bossa — musisz mieć wtedy pełne HP (leczenie z ostatniego uderzenia i z Drugiego Tchnienia się liczy).</li>
+<li><b>Hardcore</b>: wystarczy pokonać jedną falę poziomu 50 bez przedmiotów AD i AP. Osiągnięcie zalicza się w chwili pokonania fali, nawet jeśli potem zginiesz.</li>
+<li><b>Wszechstronny</b> i <b>Trzy korony</b> zliczają się na koncie, a nie na jednej postaci.</li>
+</ul>
+<p class="note">Osiągnięcia i ich postęp są zapisywane na serwerze razem z ID i nazwą konta Discord. „Usuń dane” w oknie Opcje kasuje też osiągnięcia (zob. <a href="privacy.html">Prywatność</a>).</p>
+</section>
+
+<section id="zapis">
+<h2>Zapis, konto i opcje</h2>
+<p>Na ekranie startowym wybierasz <strong>Zagraj jako gość</strong> albo <strong>Logowanie przez Discord</strong>. Przy tworzeniu postaci wpisujesz nick i wybierasz klasę (strzałki na klawiaturze przełączają karty klas). Wszystko, co dotyczy zapisu i wyglądu gry, jest w oknie <strong>Opcje</strong>.</p>
+<h3>Zapis</h3>
+<div class="tablewrap"><table>
+<tr><th>Metoda</th><th>Przyciski</th><th>Opis</th></tr>
+<tr><td>☁️ Chmura (Discord)</td><td>Zaloguj, Zapisz, Wczytaj, Usuń dane</td><td>Zapis na koncie Discord. Przyciski zapisu, wczytania i usuwania działają po zalogowaniu.</td></tr>
+<tr><td>📋 Kod zapisu</td><td>Zapisz grę, Kopiuj zapis, Wczytaj zapis</td><td>Zapis jako tekst, który możesz skopiować, przechować i wkleić do wczytania — także na innym urządzeniu.</td></tr>
+</table></div>
+<p class="note">Cooldown areny jest częścią kodu zapisu, więc wczytanie starszego zapisu go nie omija (zob. <a href="#arena">Arena</a>).</p>
+<p class="note">Do <a href="#pojedynki">pojedynków 1v1</a> liczy się zapis w chmurze: walczysz buildem z ostatniego zapisu, więc po zmianach w ekwipunku zapisz postać ponownie.</p>
+<h3>Wygląd</h3>
+<p>Motyw interfejsu: <strong>Noc</strong> (ciemny), <strong>Dzień</strong> (jasny), <strong>Wysoki kontrast</strong> i <strong>Las</strong> (ciemna zieleń). Wiki ma własny przełącznik motywu na górze strony.</p>
+<h3>Telefon</h3>
+<p>Na telefonie ekrany z wieloma kartami (np. statystyki, sklep, skiny) przewijasz przesunięciem palca w bok albo przeskakujesz zakładkami nad kartami. Gra pamięta ostatnio oglądaną kartę każdego ekranu.</p>
+</section>
+
+<section id="sterowanie">
+<h2>Sterowanie</h2>
+<div class="tablewrap"><table>
+<tr><th>Klawisz (domyślny)</th><th>Akcja</th></tr>
+<tr><td>Spacja</td><td>Umiejętność broni unikalnej (Judgement Cut Yamato / uwolnienie puli Jhina)</td></tr>
+<tr><td>Q</td><td>Zwykły atak (dla Maga — 1. umiejętność)</td></tr>
+<tr><td>Q/W/E/R (Mag)</td><td>4 umiejętności Maga</td></tr>
+<tr><td>W/E/R</td><td>3 umiejętności pozostałych klas</td></tr>
+<tr><td>A</td><td>Włącz / wyłącz auto-walkę</td></tr>
+</table></div>
+<p class="note">Mikstury i ucieczka dostępne wyłącznie przez kliknięcie odpowiednich przycisków. Wszystkie klawisze walki zmienisz w <strong>Opcje → ⚔️ Walka</strong>: kliknij klawisz i naciśnij nowy (Esc anuluje). Jeśli klawisz jest zajęty, obie akcje zamieniają się miejscami. Ustawienia zapisują się w przeglądarce, a nie w kodzie zapisu gry.</p>
+<h3>Auto-walka</h3>
+<p>Przycisk <strong>▶ Auto</strong> w nagłówku walki (lub klawisz A) gra za Ciebie: używa gotowych umiejętności klasy, umiejętności broni unikalnej (Spacja) i zwykłego ataku. Mikstura Zdrowia jest pita przy HP poniżej 40% albo gdy jeden krytyczny cios wroga mógłby Cię zabić; Eliksir Precyzji i Koktajl Wampira tylko na bossach. Postawa Sen no Kata pozostaje taka, jaką ustawisz. Obok przycisku możesz przełączać prędkość (1×/2×/3×).</p>
+<p>Domyślnie auto-walka wyłącza się po ukończeniu poziomu, porażce i wyjściu z walki, a wstrzymuje się przy niskim HP bez mikstur (gdy ucieczka jest jeszcze dostępna) oraz gdy Magowi zabraknie many. Nie działa w Arenie, bo tam liczą się tury i otrzymane obrażenia.</p>
+<p>W <strong>Opcje → ⚔️ Walka</strong> możesz to zmienić:</p>
+<ul>
+<li><b>Wyłącz zatrzymywanie auto-walki przy niskim HP / manie / braku mikstur</b> (domyślnie wył.) — auto-walka walczy dalej; Mag bez many czeka na regenerację (+5 many co 5 s).</li>
+<li><b>Używaj mikstur</b> (domyślnie wł.) — po wyłączeniu auto-walka nigdy nie pije mikstur.</li>
+<li><b>Nie wyłączaj auto-walki po przejściu poziomu</b> (domyślnie wył.) — po wygranej gra sama zaczyna kolejny poziom z włączoną auto-walką („Wróć do menu” to przerywa).</li>
+<li><b>Automatycznie zrestartuj walkę po śmierci</b> (domyślnie wył., opóźnienie 3–10 s) — jeśli auto-walka była włączona, gra cofa stan sprzed walki i od razu klika „Graj”; odliczanie można anulować.</li>
+</ul>
+</section>
+
+</div>
+  </div>
+</div>
+
+<footer class="site-footer">Copyright © 2026 szczurek9 | Wiki made by: <a href="https://github.com/szczurek9" target="_blank" rel="noopener noreferrer">@szczurek9</a> | <a href="index.html">Zagraj w grę</a></footer>
+
+<script>
+(function () {
+  var THEMES = ["noc", "dzien", "kontrast", "las"];
+  var LEGACY = { prism: "noc", night: "noc", neon: "kontrast", nature: "las" };
+  var themeSelect = document.getElementById("wiki-theme");
+
+  function normalize(theme) {
+    return THEMES.indexOf(theme) >= 0 ? theme : (LEGACY[theme] || "noc");
+  }
+  function read(key) {
+    try { return localStorage.getItem(key) || ""; } catch (error) { return ""; }
+  }
+
+  // Motyw wiki jest zapamiętany w przeglądarce; rozmiar interfejsu bierzemy z ustawień gry.
+  function applyTheme(theme) {
+    var selected = normalize(theme);
+    document.body.dataset.theme = selected;
+    themeSelect.value = selected;
+  }
+  applyTheme(read("low-wiki-theme"));
+  themeSelect.addEventListener("change", function () {
+    applyTheme(themeSelect.value);
+    try { localStorage.setItem("low-wiki-theme", themeSelect.value); } catch (error) { /* brak storage */ }
+  });
+  var size = read("low-ui-size");
+  if (size) document.documentElement.style.setProperty("--ui-font-size", size + "px");
+
+  // Podświetlanie w spisie treści sekcji, którą aktualnie czytasz.
+  var toc = document.querySelector("nav.toc");
+  var links = {};
+  toc.querySelectorAll("a").forEach(function (link) { links[link.getAttribute("href").slice(1)] = link; });
+  var phone = window.matchMedia("(max-width: 760px)");
+
+  function activate(id) {
+    Object.keys(links).forEach(function (key) {
+      links[key].classList.toggle("active", key === id);
+    });
+    // Na telefonie spis to pasek chipów - aktywny chip wjeżdża na środek paska.
+    if (phone.matches && links[id]) {
+      toc.scrollTo({ left: links[id].offsetLeft - (toc.clientWidth - links[id].offsetWidth) / 2, behavior: "smooth" });
+    }
+  }
+
+  if ("IntersectionObserver" in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && links[entry.target.id]) activate(entry.target.id);
+      });
+    }, { rootMargin: "-20% 0px -70% 0px" });
+    document.querySelectorAll("section[id]").forEach(function (section) {
+      if (links[section.id]) observer.observe(section);
+    });
+  }
+})();
+</script>
+<script>
+// Wyszukiwarka wiki — działa jak Ctrl+F: podświetla wszystkie trafienia, liczy je i przechodzi między nimi.
+// Ignoruje wielkość liter i polskie znaki (np. „lucznik” znajdzie „Łucznik”), a frazy z kilku słów
+// znajduje także wtedy, gdy część z nich jest pogrubiona albo w osobnym znaczniku.
+(function () {
+  var root = document.querySelector(".wrap");
+  var input = document.getElementById("wiki-search-input");
+  var countEl = document.getElementById("wiki-search-count");
+  var prevBtn = document.getElementById("wiki-search-prev");
+  var nextBtn = document.getElementById("wiki-search-next");
+  var clearBtn = document.getElementById("wiki-search-clear");
+  var MIN_LENGTH = 2;
+  var BLOCKS = "p, li, td, th, summary, h1, h2, h3, h4, pre, div, section";
+  var matches = [];   // [{ segs, marks }] w kolejności występowania na stronie
+  var current = -1;
+  var timer = 0;
+
+  // Znak bez wielkości liter i ogonków (ł nie rozkłada się w Unicode, więc osobno).
+  function fold(ch) {
+    if (ch === "ł" || ch === "Ł") return "l";
+    var plain = ch.normalize ? ch.normalize("NFD").replace(/[\u0300-\u036f]/g, "") : ch;
+    return plain.toLowerCase();
+  }
+
+  // Tekst po złożeniu (małe litery, bez ogonków, spacje zwinięte do jednej) + mapa: znak złożony -> pozycja w oryginale.
+  function buildIndex(raw) {
+    var text = "";
+    var map = [];
+    for (var i = 0; i < raw.length; i++) {
+      var ch = raw.charAt(i);
+      if (/\s/.test(ch)) {
+        if (text && text.charAt(text.length - 1) !== " ") { text += " "; map.push(i); }
+        continue;
+      }
+      var folded = fold(ch);
+      for (var k = 0; k < folded.length; k++) { text += folded.charAt(k); map.push(i); }
+    }
+    return { text: text, map: map };
+  }
+
+  function normalizedQuery() {
+    return buildIndex(input.value).text.replace(/ +$/, "");
+  }
+
+  function clearMarks() {
+    var parents = [];
+    root.querySelectorAll("mark.wiki-hit").forEach(function (mark) {
+      var parent = mark.parentNode;
+      while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+      parent.removeChild(mark);
+      if (parents.indexOf(parent) < 0) parents.push(parent);
+    });
+    parents.forEach(function (parent) { parent.normalize(); });
+    matches = [];
+    current = -1;
+  }
+
+  // Węzły tekstowe pogrupowane według najbliższego bloku (akapit, komórka tabeli, punkt listy...).
+  function collectGroups() {
+    var groups = new Map();
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (node) {
+        var tag = node.parentNode.nodeName;
+        if (tag === "SCRIPT" || tag === "STYLE" || tag === "NOSCRIPT" || !node.nodeValue) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    while (walker.nextNode()) {
+      var node = walker.currentNode;
+      var block = node.parentNode.closest(BLOCKS) || root;
+      if (!groups.has(block)) groups.set(block, []);
+      groups.get(block).push(node);
+    }
+    return groups;
+  }
+
+  function isBefore(a, b) {
+    return Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+  }
+
+  function runSearch() {
+    clearMarks();
+    var query = normalizedQuery();
+    if (query.length >= MIN_LENGTH) {
+      var found = [];
+      collectGroups().forEach(function (nodes) {
+        var raw = "";
+        var starts = [];
+        nodes.forEach(function (node) { starts.push(raw.length); raw += node.nodeValue; });
+        var index = buildIndex(raw);
+        var from = 0;
+        var at;
+        while ((at = index.text.indexOf(query, from)) >= 0) {
+          var rawStart = index.map[at];
+          var rawEnd = index.map[at + query.length - 1] + 1;
+          var match = { segs: [], marks: [] };
+          nodes.forEach(function (node, k) {
+            var s = Math.max(rawStart, starts[k]);
+            var e = Math.min(rawEnd, starts[k] + node.nodeValue.length);
+            if (e > s) match.segs.push({ node: node, s: s - starts[k], e: e - starts[k] });
+          });
+          if (match.segs.length) found.push(match);
+          from = at + query.length;
+        }
+      });
+
+      // Zawijamy trafienia w <mark>, w każdym węźle od końca, żeby wcześniejsze pozycje się nie przesuwały.
+      var perNode = new Map();
+      found.forEach(function (match) {
+        match.segs.forEach(function (seg) {
+          if (!perNode.has(seg.node)) perNode.set(seg.node, []);
+          perNode.get(seg.node).push({ s: seg.s, e: seg.e, match: match });
+        });
+      });
+      perNode.forEach(function (list, node) {
+        list.sort(function (a, b) { return b.s - a.s; });
+        list.forEach(function (seg) {
+          node.splitText(seg.e);
+          var middle = node.splitText(seg.s);
+          var mark = document.createElement("mark");
+          mark.className = "wiki-hit";
+          middle.parentNode.insertBefore(mark, middle);
+          mark.appendChild(middle);
+          seg.match.marks.push(mark);
+        });
+      });
+      found.forEach(function (match) {
+        match.marks.sort(function (a, b) { return isBefore(a, b) ? -1 : 1; });
+      });
+      found.sort(function (a, b) { return isBefore(a.marks[0], b.marks[0]) ? -1 : 1; });
+      matches = found;
+    }
+    if (matches.length) go(0); else update();
+  }
+
+  function setCurrent(match, on) {
+    match.marks.forEach(function (mark) { mark.classList.toggle("is-current", on); });
+  }
+
+  // Rozwija zwinięte <details> wokół trafienia (tak jak robi to Ctrl+F w przeglądarce).
+  function openAncestors(element) {
+    for (var parent = element.parentElement; parent; parent = parent.parentElement) {
+      if (parent.tagName === "DETAILS") parent.open = true;
+    }
+  }
+
+  function go(index) {
+    if (!matches.length) return;
+    if (current >= 0 && matches[current]) setCurrent(matches[current], false);
+    current = (index + matches.length) % matches.length;
+    var match = matches[current];
+    setCurrent(match, true);
+    openAncestors(match.marks[0]);
+    match.marks[0].scrollIntoView({ block: "center", inline: "nearest" });
+    update();
+  }
+
+  function update() {
+    var text = "";
+    var query = normalizedQuery();
+    if (input.value.trim()) {
+      if (query.length < MIN_LENGTH) text = "min. " + MIN_LENGTH + " znaki";
+      else if (!matches.length) text = "Brak wyników";
+      else text = (current + 1) + " / " + matches.length;
+    }
+    countEl.textContent = text;
+    countEl.classList.toggle("is-empty", text === "Brak wyników");
+    prevBtn.disabled = nextBtn.disabled = !matches.length;
+    clearBtn.hidden = !input.value;
+  }
+
+  function reset(keepFocus) {
+    clearTimeout(timer);
+    timer = 0;
+    clearMarks();
+    input.value = "";
+    update();
+    if (keepFocus) input.focus();
+  }
+
+  input.addEventListener("input", function () {
+    clearBtn.hidden = !input.value;
+    clearTimeout(timer);
+    timer = setTimeout(function () { timer = 0; runSearch(); }, 150);
+  });
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      if (timer) { clearTimeout(timer); timer = 0; runSearch(); }
+      else go(current + (event.shiftKey ? -1 : 1));
+    } else if (event.key === "Escape") {
+      if (input.value) reset(true); else input.blur();
+    }
+  });
+  prevBtn.addEventListener("click", function () { go(current - 1); });
+  nextBtn.addEventListener("click", function () { go(current + 1); });
+  clearBtn.addEventListener("click", function () { reset(true); });
+
+  // „/” otwiera wyszukiwarkę (Ctrl+F zostaje przy przeglądarce).
+  document.addEventListener("keydown", function (event) {
+    var target = event.target;
+    var typing = target && (/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.isContentEditable);
+    if (event.key === "/" && !typing && !event.ctrlKey && !event.metaKey && !event.altKey) {
+      event.preventDefault();
+      input.focus();
+      input.select();
+    }
+  });
+  update();
+})();
+</script>
+<script>
+// Ikony przedmiotów: pokazuje emotkę kategorii, a gdy plik res/icons/<grupa>/<id>.png istnieje, podmienia ją na obrazek.
+// Nowe PNG wystarczy wrzucić do folderu — HTML wiki nie wymaga zmian.
+// data-src = pełna ścieżka pliku (umiejętności), data-glyph = własna emotka zastępcza.
+(function () {
+  var GLYPHS = { weapons: "🗡️", "ad-items": "⚔️", "magic-items": "🔮", skills: "✨", potions: "🧪" };
+  document.querySelectorAll(".wiki-item-icon").forEach(function (holder) {
+    var group = holder.dataset.group;
+    var glyph = document.createElement("span");
+    glyph.className = "wiki-icon-glyph";
+    glyph.setAttribute("aria-hidden", "true");
+    glyph.textContent = holder.dataset.glyph || GLYPHS[group] || "•";
+    holder.appendChild(glyph);
+    var img = new Image();
+    img.className = "wiki-icon";
+    img.alt = "";
+    img.onload = function () { holder.replaceChildren(img); };
+    img.src = holder.dataset.src || ("res/icons/" + group + "/" + holder.dataset.id + ".png");
+  });
+})();
+</script>
+</body>
+</html>

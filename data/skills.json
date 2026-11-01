@@ -1,0 +1,10 @@
+[
+  {
+    "id": "secondWind",
+    "name": "Drugie Tchnienie",
+    "price": 275,
+    "description": "Pokonanie przeciwnika leczy Cię o 25% maksymalnego HP i many.",
+    "effect": "secondWind",
+    "value": 25
+  }
+]

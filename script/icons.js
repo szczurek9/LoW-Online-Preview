@@ -1,0 +1,238 @@
+// Ikony statystyk, klas, mikstur i umiejętności.
+//
+// Każda ikona ma dwie warstwy: obrazek PNG (opcjonalny) i emotkę zastępczą.
+// Jeśli pliku nie ma w res/icons/..., wyświetla się emotka — dzięki temu
+// ikony można dorysowywać po kolei, bez ruszania kodu.
+//
+//   res/icons/stats/<plik>.png     64x64   (lista poniżej w STATS)
+//   res/icons/classes/<id>.png     96x96   (jak ikony umiejętności)
+//   res/icons/potions/<id>.png     64x64
+//   res/abilities/<klasa>/abilityN.png      (już istniejące, 96x96)
+//   res/icons/weapons|ad-items|magic-items|skills/<id>.png   ikony przedmiotów sklepu (64x64)
+//   res/icons/passives/<klasa>.png                           ikony pasywek klas
+//   res/icons/effects/<id>.png                               ikony aktywnych efektów w walce (64x64)
+// Brakujący plik przedmiotu = emotka kategorii (🗡️ broń, ⚔️ AD, 🔮 AP, ✨ wzmocnienia i pasywki),
+// a brakujący plik efektu = emotka ℹ️.
+(function () {
+  const STATS = {
+    hp:        { file: "hp",         glyph: "❤️", label: "Zdrowie (HP)" },
+    mana:      { file: "mana",       glyph: "🔷", label: "Mana" },
+    damage:    { file: "damage",     glyph: "⚔️", label: "Obrażenia" },
+    ad:        { file: "ad",         glyph: "AD", label: "Siła ataku (AD)", text: true },
+    crit:      { file: "crit",       glyph: "💥", label: "Szansa na krytyka" },
+    armorPen:  { file: "armor-pen",  glyph: "🗡️", label: "Penetracja pancerza" },
+    ap:        { file: "ap",         glyph: "⭐", label: "Moc umiejętności (AP)" },
+    manaRegen: { file: "mana-regen", glyph: "🔷", label: "Regeneracja many na turę" },
+    armor:     { file: "armor",      glyph: "🛡️", label: "Pancerz" },
+    mr:        { file: "mr",         glyph: "MR", label: "Odporność magiczna", text: true },
+    accuracy:  { file: "accuracy",   glyph: "🎯", label: "Celność" },
+    lifesteal: { file: "lifesteal",  glyph: "🩸", label: "Kradzież życia (lifesteal)" },
+    magicPen:  { file: "magic-pen",  glyph: "🪄", label: "Penetracja magii" },
+    cooldown:  { file: "cooldown",   glyph: "⏳", label: "Redukcja odnowienia (tury)" },
+  };
+
+  const CLASS_GLYPHS = { assassin: "🥷", mage: "🧙", tank: "🛡️", samurai: "⚔️", archer: "🏹" };
+  const ABILITY_GLYPHS = { physical: "⚔️", magic: "🔮", utility: "✨", hybrid: "⚡", toggle: "🔄" };
+  const POTION_GLYPH = "🧪";
+  const INFO_GLYPH = "ℹ️";
+  // Zastępcza emotka przedmiotu zależy od kategorii, żeby brak pliku nie wyglądał jak błąd.
+  const GROUP_GLYPHS = { weapons: "🗡️", "ad-items": "⚔️", "magic-items": "🔮", skills: "✨", passives: "✨" };
+
+  // Efekty, które mogą pojawić się w walce (id pliku = nazwa pliku PNG).
+  const EFFECTS = {
+    potionAccuracy: "Eliksir Precyzji",
+    potionLifesteal: "Koktajl Wampira",
+    stun: "Ogłuszenie",
+    poison: "Zatrucie",
+    burn: "Podpalenie",
+    killLifesteal: "Płomień Wojny (lifesteal)",
+    vines: "Pnącza",
+    mirror: "Śmiertelne Lustro",
+    mushin: "Mushin",
+    ironTaunt: "Prowokacja",
+    bastion: "Bastion",
+    rageArmor: "Pancerz z wściekłości",
+    focusMark: "Znacznik Skupienia",
+    evadeNext: "Unik następnego ataku",
+    undodgeableSpeed: "Un-Dodgable Speed",
+    primalStrike: "Primal Strike",
+    overkillPool: "Overkill",
+    ragePool: "Skumulowany Gniew",
+    jhinPool: "Pula Pistoletu Jhina",
+    yamatoJudgement: "Judgement Cut",
+  };
+
+  // Efekty bez własnego pliku w res/icons/effects/ używają ikony umiejętności, która je wywołuje.
+  // Po dodaniu res/icons/effects/<id>.png usuń odpowiedni wpis.
+  const EFFECT_ICON_OVERRIDES = {
+    undodgeableSpeed: "res/abilities/assassin/ability2.png",
+    primalStrike: "res/abilities/assassin/ability1.png",
+    overkillPool: "res/icons/passives/assassin.png",
+    ragePool: "res/icons/passives/tank.png",
+    jhinPool: "res/icons/weapons/jhinPistol.png",
+    yamatoJudgement: "res/icons/weapons/yamato.png",
+  };
+
+  // Które adresy obrazków istnieją (wiemy dopiero po próbnym załadowaniu).
+  const known = new Map(); // url -> true | false | Promise
+  function probe(url) {
+    if (known.has(url)) return Promise.resolve(known.get(url));
+    return new Promise((resolve) => {
+      const image = new Image();
+      image.onload = () => { known.set(url, true); resolve(true); };
+      image.onerror = () => { known.set(url, false); resolve(false); };
+      image.src = url;
+    });
+  }
+  const exists = (url) => known.get(url) === true;
+
+  const statUrl = (key) => `res/icons/stats/${STATS[key].file}.png`;
+  const classUrl = (id) => `res/icons/classes/${id}.png`;
+  const potionUrl = (id) => `res/icons/potions/${id}.png`;
+  const abilityUrl = (classId, ability) => `res/abilities/${classId}/${ability.icon}`;
+  const itemUrl = (group, id) => `res/icons/${group}/${id}.png`;
+  const effectUrl = (id) => EFFECT_ICON_OVERRIDES[id] || `res/icons/effects/${id}.png`;
+
+  // Element ikony: <img> jeśli plik istnieje, w przeciwnym razie emotka.
+  function make(url, glyph, className, isText) {
+    const holder = document.createElement("span");
+    holder.className = `game-icon ${className || ""}`.trim();
+    holder.setAttribute("aria-hidden", "true");
+    const showGlyph = () => {
+      const span = document.createElement("span");
+      span.className = `game-icon-glyph${isText ? " is-text" : ""}`;
+      span.textContent = glyph;
+      holder.replaceChildren(span);
+    };
+    if (url && exists(url)) {
+      const image = new Image();
+      image.alt = "";
+      image.draggable = false;
+      image.addEventListener("error", showGlyph, { once: true });
+      image.src = url;
+      holder.appendChild(image);
+    } else {
+      showGlyph();
+      if (url && !known.has(url)) probe(url); // następne renderowanie już zobaczy obrazek
+    }
+    return holder;
+  }
+
+  function stat(key, className) {
+    const def = STATS[key];
+    if (!def) return make(null, "•", className);
+    return make(statUrl(key), def.glyph, className, def.text);
+  }
+
+  // Chip „ikona + wartość”. Etykieta pokazuje się po najechaniu, fokusie albo dotknięciu.
+  function chip(key, value, label) {
+    const def = STATS[key] || { label: key };
+    const text = label || def.label;
+    const element = document.createElement("span");
+    element.className = "stat-chip";
+    element.dataset.stat = key;
+    element.dataset.label = text;
+    element.tabIndex = 0;
+    element.setAttribute("role", "img");
+    element.setAttribute("aria-label", `${text}: ${value}`);
+    element.appendChild(stat(key));
+    const number = document.createElement("b");
+    number.textContent = value;
+    element.appendChild(number);
+    return element;
+  }
+
+  function classIcon(classId, className) {
+    return make(classUrl(classId), CLASS_GLYPHS[classId] || "❔", className);
+  }
+
+  function potionIcon(potionId, className) {
+    return make(potionUrl(potionId), POTION_GLYPH, className);
+  }
+
+  function abilityIcon(classId, ability, className) {
+    return make(abilityUrl(classId, ability), ABILITY_GLYPHS[ability.type] || "✨", className);
+  }
+
+  // Ikona przedmiotu sklepu: group = weapons | ad-items | magic-items | skills | passives.
+  function itemIcon(group, id, className) {
+    return make(itemUrl(group, id), GROUP_GLYPHS[group] || INFO_GLYPH, className);
+  }
+
+  // Chip aktywnego efektu w walce: ta sama ramka i rozmiar co chipy statystyk.
+  function effectChip(id, value, label) {
+    const text = label || EFFECTS[id] || id;
+    const element = document.createElement("span");
+    element.className = "stat-chip effect-icon-chip";
+    element.dataset.label = text;
+    element.tabIndex = 0;
+    element.setAttribute("role", "img");
+    element.setAttribute("aria-label", text);
+    element.appendChild(make(effectUrl(id), INFO_GLYPH));
+    if (value !== "") {
+      const number = document.createElement("b");
+      number.textContent = value;
+      element.appendChild(number);
+    }
+    return element;
+  }
+
+  // Gwiazdki trudności, np. stars(2) → ★★☆
+  function stars(count, max = 3, label = "Poziom trudności") {
+    const element = document.createElement("span");
+    element.className = "class-stars";
+    element.setAttribute("role", "img");
+    element.setAttribute("aria-label", `${label}: ${count} z ${max}`);
+    element.title = `${label}: ${count}/${max}`;
+    element.textContent = "★".repeat(count) + "☆".repeat(Math.max(0, max - count));
+    return element;
+  }
+
+  // Statyczne miejsca w HTML: <span data-stat-icon="hp"></span>
+  function hydrate(root = document) {
+    root.querySelectorAll("[data-stat-icon]").forEach((holder) => {
+      holder.replaceChildren(stat(holder.dataset.statIcon));
+    });
+  }
+
+  // Wstępne sprawdzenie, które pliki istnieją.
+  const initial = [
+    ...Object.keys(STATS).map(statUrl),
+    ...Object.keys(CLASS_GLYPHS).map(classUrl),
+    ...Object.keys(EFFECTS).map(effectUrl),
+  ];
+  const ready = Promise.all(initial.map(probe)).then(() => {
+    hydrate();
+    document.dispatchEvent(new CustomEvent("gameicons:ready"));
+  });
+
+  // Mikstury i ikony umiejętności znamy dopiero po wczytaniu danych gry.
+  if (window.gameDataReady) {
+    window.gameDataReady.then(() => {
+      const urls = [];
+      (window.shopPotions || []).forEach((potion) => urls.push(potionUrl(potion.id)));
+      (window.shopWeapons || []).forEach((item) => urls.push(itemUrl("weapons", item.id)));
+      (window.adItems || []).forEach((item) => urls.push(itemUrl("ad-items", item.id)));
+      (window.magicItems || []).forEach((item) => urls.push(itemUrl("magic-items", item.id)));
+      (window.shopSkills || []).forEach((item) => urls.push(itemUrl("skills", item.id)));
+      Object.keys(CLASS_GLYPHS).forEach((classId) => urls.push(itemUrl("passives", classId)));
+      Object.entries(window.classAbilities || {}).forEach(([classId, data]) => {
+        (data.active || []).forEach((ability) => urls.push(abilityUrl(classId, ability)));
+      });
+      return Promise.all(urls.map(probe));
+    }).then(() => document.dispatchEvent(new CustomEvent("gameicons:ready")));
+  }
+
+  // Dotknięcie chipa (telefon) pokazuje jego etykietę; dotknięcie gdzie indziej ją chowa.
+  document.addEventListener("click", (event) => {
+    const target = event.target.closest?.(".stat-chip");
+    document.querySelectorAll(".stat-chip.show-label").forEach((open) => {
+      if (open !== target) open.classList.remove("show-label");
+    });
+    if (target) target.classList.toggle("show-label");
+  });
+
+  hydrate();
+
+  window.GameIcons = { STATS, EFFECTS, ready, probe, stat, chip, effectChip, itemIcon, classIcon, potionIcon, abilityIcon, stars, hydrate };
+})();

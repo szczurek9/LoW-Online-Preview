@@ -1,0 +1,284 @@
+[
+  {
+    "id": "assassinRingAd",
+    "name": "Pierścień Zabójcy",
+    "price": 750,
+    "description": "+45 AD, +10% szansy na krytyka. Twoje ataki ignorują 8 pkt pancerza przeciwnika.",
+    "ad": 45,
+    "armorPenetration": 8,
+    "critChance": 10
+  },
+  {
+    "id": "huntersDagger",
+    "name": "Sztylet Łowcy",
+    "price": 850,
+    "description": "+35 AD, +5% celności, +5% lifestealu.",
+    "ad": 35,
+    "accuracy": 5,
+    "lifesteal": 5
+  },
+  {
+    "id": "flameBlade",
+    "name": "Ostrze Płomieni",
+    "price": 1400,
+    "description": "+60 AD, +10% szansy trafienia. Twoje ataki ignorują 20% pancerza przeciwnika (liczone przed przebiciem płaskim).",
+    "ad": 60,
+    "armorPenetrationPercent": 20,
+    "accuracy": 10,
+    "unique": true
+  },
+  {
+    "id": "hasteBlade",
+    "name": "Ostrze Pośpiechu",
+    "price": 1400,
+    "description": "+45 AD. Twoje ataki ignorują 5 pkt pancerza przeciwnika. Odnowienie umiejętności krótsze o 1 turę (łączny limit: 2 tury).",
+    "ad": 45,
+    "armorPenetration": 5,
+    "cooldownReduction": 1
+  },
+  {
+    "id": "executionerSigil",
+    "name": "Sygnet Egzekutora",
+    "price": 2000,
+    "description": "+60 AD. Twoje ataki ignorują 8 pkt pancerza przeciwnika. Odnowienie umiejętności pod klawiszem R krótsze o 2 tury (limit: 2 tury).",
+    "ad": 60,
+    "armorPenetration": 8,
+    "rCooldownReduction": 2
+  },
+  {
+    "id": "snakeFang",
+    "name": "Kieł Węża",
+    "price": 2100,
+    "description": "+70 AD, +12% lifestealu (leczysz się za 12% zadanych obrażeń). Co 5. trafiony atak zatruwa przeciwnika na 2 tury: zatrucie zadaje co turę 30 + 20% AD obrażeń magicznych i obniża szansę na unik przeciwnika o 10%. Kolejne zatrucie tylko odświeża czas trwania. Licznik zeruje się z każdą falą.",
+    "ad": 70,
+    "lifesteal": 12,
+    "unique": true,
+    "special": "snakeFang"
+  },
+  {
+    "id": "wolfGrip",
+    "name": "Uchwyt Wilka",
+    "price": 2600,
+    "description": "+105 AD, +20% szansy na krytyka, +10% lifestealu. Każdy trafiony atak zadaje dodatkowo 8 + 12% AD obrażeń fizycznych (redukowanych przez pancerz, nie mnożonych przez krytyk). Maksymalnie 2 sztuki, każda dodaje kolejny taki bonus.",
+    "ad": 105,
+    "critChance": 20,
+    "lifesteal": 10,
+    "bonusDamage": 8,
+    "bonusDamageAdScaling": 0.12,
+    "maxOwned": 2
+  },
+  {
+    "id": "bloodyCannon",
+    "name": "Krwawa Armata",
+    "price": 2800,
+    "description": "+140 AD, +20% szansy na krytyka, +5% szansy trafienia. Twoje ataki ignorują 12 pkt pancerza przeciwnika.",
+    "ad": 140,
+    "critChance": 20,
+    "armorPenetration": 12,
+    "accuracy": 5
+  },
+  {
+    "id": "shadowArrows",
+    "name": "Strzały Cienii",
+    "price": 3000,
+    "description": "+105 AD, +20% szansy na krytyka. Jeśli co drugi trafiony atak (2., 4., 6. w danej fali) jest krytykiem, zadaje dodatkowo x1,8 obrażeń (mnoży się z normalnym bonusem krytyka). Nie działa dla Samuraja.",
+    "ad": 105,
+    "critChance": 20,
+    "unique": true,
+    "special": "shadowArrows"
+  },
+  {
+    "id": "impulseClaw",
+    "name": "Szpon Impulsu",
+    "price": 3100,
+    "description": "+85 AD, +10% szansy na krytyka. Twoje ataki ignorują 8 pkt pancerza przeciwnika. Odnowienie umiejętności krótsze o 2 tury (łączny limit: 2 tury).",
+    "ad": 85,
+    "armorPenetration": 8,
+    "critChance": 10,
+    "cooldownReduction": 2
+  },
+  {
+    "id": "nightPower",
+    "name": "Potęga Nocy",
+    "price": 3300,
+    "description": "+120 AD, +12 pkt przebicia pancerza (Twoje ataki ignorują 12 pkt pancerza przeciwnika). Co 5. trafiony atak zadaje dodatkowo 10 + 10% AD obrażeń nieuchronnych, które ignorują pancerz i odporność magiczną. Licznik zeruje się z każdą falą.",
+    "ad": 120,
+    "armorPenetration": 12,
+    "unique": true,
+    "special": "nightPower"
+  },
+  {
+    "id": "assassinCloakAd",
+    "name": "Płaszcz Zabójcy",
+    "price": 3600,
+    "description": "+125 AD, +30% szansy na krytyka. Twoje ataki zadają o 20% więcej obrażeń przeciwnikom, którzy mają 30% HP lub mniej.",
+    "ad": 125,
+    "critChance": 30,
+    "unique": true,
+    "special": "assassinCloakAd"
+  },
+  {
+    "id": "chainmail",
+    "name": "Kolczuga",
+    "price": 650,
+    "description": "+50 HP, +15 pancerza, +10 odporności magicznej.",
+    "health": 50,
+    "armor": 15,
+    "magicResistance": 10,
+    "categories": [
+      "tank"
+    ]
+  },
+  {
+    "id": "steelChestplate",
+    "name": "Stalowy Napierśnik",
+    "price": 1000,
+    "description": "+100 HP, +25 pancerza.",
+    "health": 100,
+    "armor": 25,
+    "categories": [
+      "tank"
+    ]
+  },
+  {
+    "id": "lightArmor",
+    "name": "Lekki Pancerz",
+    "price": 400,
+    "description": "+70 HP, +8 pancerza, +12 odporności magicznej.",
+    "health": 70,
+    "armor": 8,
+    "magicResistance": 12,
+    "categories": [
+      "tank"
+    ]
+  },
+  {
+    "id": "golemArmor",
+    "name": "Pancerz Golema",
+    "price": 2500,
+    "unique": true,
+    "categories": [
+      "tank"
+    ],
+    "health": 200,
+    "armor": 30,
+    "description": "+200 HP, +30 pancerza. Pochłonięcie: co 6. otrzymane uderzenie zyskujesz maksymalne zdrowie równe 10% obrażeń, które ci zadało. Bonus jest trwały i zostaje także po zmianie poziomu.",
+    "absorbEveryHits": 6,
+    "absorbPercent": 10
+  },
+  {
+    "id": "chestplateOfTheForest",
+    "name": "Napierśnik Lasu",
+    "price": 2400,
+    "categories": [
+      "tank"
+    ],
+    "health": 500,
+    "armor": 10,
+    "description": "+500 HP, +10 pancerza. Roślinna Witalność: co 5 tur przywracasz 3,5% maksymalnego zdrowia plus 1% obrażeń otrzymanych w tej turze.",
+    "regenEveryTurns": 5,
+    "regenMaxHealthPercent": 3.5,
+    "regenDamagePercent": 1
+  },
+  {
+    "id": "bloodthirstyChainmail",
+    "name": "Krwiożercza Kolczuga",
+    "price": 1800,
+    "unique": true,
+    "categories": [
+      "tank"
+    ],
+    "health": 100,
+    "armor": 50,
+    "description": "+100 HP, +50 pancerza. Krwiożerca: zmniejsza leczenie przeciwnika o 35% i leczysz się za 5% tego, co przeciwnik się leczy. Działa tylko wtedy, gdy przeciwnik się leczy (pojedynki).",
+    "healReductionPercent": 35,
+    "healStealPercent": 5
+  },
+  {
+    "id": "giantsHammer",
+    "name": "Młot Giganta",
+    "price": 2100,
+    "unique": true,
+    "categories": [
+      "tank",
+      "warrior"
+    ],
+    "ad": 20,
+    "health": 300,
+    "description": "+20 AD, +300 HP. Kolosalne Uderzenie: twoje ataki zadają dodatkowo 3% maksymalnego zdrowia obrażeń fizycznych.",
+    "maxHealthDamagePercent": 3
+  },
+  {
+    "id": "knightsEdge",
+    "name": "Rycerskie Ostrze",
+    "price": 600,
+    "categories": [
+      "warrior"
+    ],
+    "ad": 30,
+    "armor": 10,
+    "description": "+30 AD, +10 pancerza."
+  },
+  {
+    "id": "harvesterScythe",
+    "name": "Kosa Żniwiarza",
+    "price": 1300,
+    "categories": [
+      "warrior"
+    ],
+    "ad": 45,
+    "health": 120,
+    "lifesteal": 7.5,
+    "description": "+45 AD, +120 HP, +7,5% lifestealu."
+  },
+  {
+    "id": "starBreaker",
+    "name": "Gwiazdołamacz",
+    "price": 1700,
+    "unique": true,
+    "categories": [
+      "warrior"
+    ],
+    "ad": 50,
+    "description": "+50 AD. Gwiezdny pył: co 4. trafiony atak daje ci tarczę równą 35% twojego AD na 2 tury.",
+    "shieldEveryAttacks": 4,
+    "shieldAdPercent": 35,
+    "shieldTurns": 2
+  },
+  {
+    "id": "fireCleaver",
+    "name": "Ognisty Tasak",
+    "price": 2300,
+    "unique": true,
+    "categories": [
+      "warrior"
+    ],
+    "ad": 45,
+    "health": 130,
+    "lifesteal": 5,
+    "description": "+45 AD, +130 HP, +5% lifestealu. Płomień Wojny: co 4. trafiony atak podpala przeciwnika na 2 tury. Po pokonaniu przeciwnika zyskujesz +5% lifestealu na 3 ataki. Podpalenie zadaje 10 + 13% AD + 4% AP obrażeń nieuchronnych na turę i zmniejsza leczenie przeciwnika o 15%.",
+    "burnEveryAttacks": 4,
+    "burnTurns": 2,
+    "killLifestealPercent": 5,
+    "killLifestealTurns": 3
+  },
+  {
+    "id": "runicBelt",
+    "name": "Pas runiczny",
+    "price": 2500,
+    "unique": true,
+    "categories": [
+      "warrior"
+    ],
+    "ad": 65,
+    "magicResistance": 30,
+    "armor": 15,
+    "description": "+65 AD, +30 odporności magicznej, +15 pancerza. Overload: co 3. otrzymane obrażenia magiczne dają tarczę magiczną 50 + 10,5% tych obrażeń, a co 3. fizyczne tarczę fizyczną 25 + 14,5% tych obrażeń (na 1 turę). 25% obrażeń zablokowanych przez te tarcze zamienia się w bonusowe obrażenia fizyczne przy twoim następnym trafieniu.",
+    "overloadEvery": 3,
+    "overloadMagicBase": 50,
+    "overloadMagicPercent": 10.5,
+    "overloadPhysicalBase": 25,
+    "overloadPhysicalPercent": 14.5,
+    "overloadConvertPercent": 25
+  }
+]

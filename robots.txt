@@ -1,0 +1,9 @@
+User-agent: *
+
+Allow: /
+
+Disallow: /data/
+Disallow: /script/
+Disallow: /style/
+
+Sitemap: https://legendsofwpierdol-online.pages.dev/sitemap.xml

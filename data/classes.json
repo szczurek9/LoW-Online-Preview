@@ -1,0 +1,42 @@
+[
+  {
+    "id": "assassin",
+    "name": "Zabójca",
+    "baseStats": { "health": [220, 45], "armor": [25, 1], "magicResistance": [30, 0.5] },
+    "description": "+10% obrażeń broni, +5% lifestealu, +10% celności. Start: 220 HP, 25 pancerza, 30 odp. magicznej; co poziom +45 HP, +1 pancerza, +1 odp. magicznej co 2 poziomy.",
+    "difficulty": 2,
+    "role": "Obrażenia fizyczne i Overkill"
+  },
+  {
+    "id": "mage",
+    "name": "Mag",
+    "baseStats": { "health": [190, 40], "armor": [40, 1], "magicResistance": [5, 0.5] },
+    "description": "320 many, większa regeneracja many, magiczna penetracja i 8 dynamicznych slotów (AD lub AP). Start: 190 HP, 40 pancerza, 5 odp. magicznej; co poziom +40 HP, +1 pancerza, +1 odp. magicznej co 2 poziomy.",
+    "difficulty": 1,
+    "role": "Czary, mana i przedmioty magiczne"
+  },
+  {
+    "id": "tank",
+    "name": "Tank",
+    "baseStats": { "health": [270, 60], "armor": [45, 2], "magicResistance": [25, 2] },
+    "description": "Najwięcej zdrowia i odporności. Start: 270 HP, 45 pancerza, 25 odp. magicznej; co poziom +60 HP, +2 pancerza, +2 odp. magicznej.",
+    "difficulty": 1,
+    "role": "Zdrowie, pancerz i Gniew"
+  },
+  {
+    "id": "samurai",
+    "name": "Samurai",
+    "baseStats": { "health": [210, 50], "armor": [30, 1], "magicResistance": [15, 1] },
+    "description": "+15% obrażeń, +15% celności, +10% uniku. Broń melee: +10% obrażeń i +5% lifestealu. Start: 210 HP, 30 pancerza, 15 odp. magicznej; co poziom +50 HP, +1 pancerza, +1 odp. magicznej.",
+    "difficulty": 2,
+    "role": "Celność, uniki i postawy bojowe"
+  },
+  {
+    "id": "archer",
+    "name": "Łucznik",
+    "baseStats": { "health": [370, 40], "armor": [30, 1], "magicResistance": [25, 1] },
+    "description": "+30% celności, +5% lifestealu, 200 many, 8 dynamicznych slotów (AD lub AP). Start: 370 HP, 30 pancerza, 25 odp. magicznej; co poziom +40 HP, +1 pancerza, +1 odp. magicznej.",
+    "difficulty": 3,
+    "role": "Hybryda AD/AP z 8 slotami"
+  }
+]

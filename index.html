@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=New+Rocker&family=Tagesschrift&display=swap" rel="stylesheet">
+    <!-- Zapamiętany rozmiar interfejsu stosujemy od razu, żeby strona nie "skakała" po załadowaniu. -->
+    <script>
+        try {
+            var uiSize = localStorage.getItem("low-ui-size");
+            if (uiSize) document.documentElement.style.setProperty("--ui-font-size", uiSize + "px");
+        } catch (e) { /* brak dostępu do localStorage - zostaje rozmiar domyślny */ }
+    </script>
+    <!-- Podstawowe Meta Tagi dla Google -->
+    <title>Legends of Wpierdol Online</title>
+    <meta name="google-site-verification" content="5f0gE9YWILI4lI1lq_wBUszcqaEipr71EH8FI_bcwrs" />
+    <meta name="description" content="Przeglądarkowe idle-RPG. 5 unikalnych klas postaci, 50 wymagających poziomów i rozbudowany system rozwoju postaci. Zrób wpierdol swoim przeciwnikom!">
+
+    <!-- Tagi Open Graph (Discord, Facebook) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Legends of Wpierdol Online">
+    <meta property="og:description" content="Przeglądarkowe idle-RPG. 5 unikalnych klas postaci, 50 wymagających poziomów i rozbudowany system rozwoju postaci. Zrób wpierdol swoim przeciwnikom!">
+    <meta property="og:url" content="https://legendsofwpierdol-online.pages.dev/">
+    <meta property="og:image" content="https://legendsofwpierdol-online.pages.dev/res/img/background.png">
+    <meta property="og:site_name" content="Legends of Wpierdol">
+
+    <!-- Tagi dla X / Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Legends of Wpierdol Online">
+    <meta name="twitter:description" content="Przeglądarkowe idle-RPG. 5 unikalnych klas postaci, 50 wymagających poziomów i rozbudowany system rozwoju postaci. Zrób wpierdol swoim przeciwnikom!">
+    <meta name="twitter:image" content="https://legendsofwpierdol-online.pages.dev/res/img/background.png">
+
+    <link rel="stylesheet" href="style/themes.css">
+    <link rel="stylesheet" href="style/base.css">
+    <link rel="stylesheet" href="style/menu.css">
+    <link rel="stylesheet" href="style/battle.css">
+    <link rel="stylesheet" href="style/shop.css">
+    <link rel="stylesheet" href="style/inventory.css">
+    <link rel="stylesheet" href="style/skins.css">
+    <link rel="stylesheet" href="style/achievements.css">
+    <link rel="stylesheet" href="style/responsive.css">
+    <link rel="stylesheet" href="style/modals.css">
+    <link rel="stylesheet" href="style/utilities.css">
+    <link rel="stylesheet" href="style/hud.css">
+    <link rel="stylesheet" href="style/mobileCards.css">
+    <link rel="stylesheet" href="style/duel.css">
+    <link rel="stylesheet" href="style/tutorial.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+</head>
+<body data-theme="noc">
+
+    <div class="main">
+    <h1 id="titleheader">Legends of Wpierdol</h1>
+    <p id="titleedition">Web Edition</p>
+
+        <div id="start-screen">
+            <button id="entry-guest-btn" type="button" class="btn-primary">🎮 Zagraj jako gość</button>
+            <button id="entry-discord-btn" type="button">🔑 Logowanie przez Discord</button>
+            <button id="new-game-btn" type="button" class="hidden">🎮 Nowa gra</button>
+            <button id="load-game-btn" type="button" class="hidden">📥 Wczytaj grę</button>
+            <button id="cloud-open-btn" type="button" class="hidden">☁️ Chmura (Discord)</button>
+            <button id="wiki-start-btn" type="button" data-open-wiki>📖 Wiki</button>
+            <p id="start-message" class="screen-message" aria-live="polite"></p>
+        </div>
+
+        <div id="login-screen" class="hidden">
+            <label for="nickname" class="field-label">Podaj swój nick:</label>
+            <div class="nick-row">
+                <input type="text" id="nickname" placeholder="Nick" autocomplete="off">
+                <button type="button" id="nick-random" class="nick-random" title="Wylosuj nick" aria-label="Wylosuj nick">🎲 Losuj</button>
+            </div>
+            <span id="class-picker-label" class="class-picker-label field-label">Wybierz klasę (nie można jej później zmienić):</span>
+            <input type="hidden" id="class-select" value="assassin">
+            <div id="class-cards" class="class-cards" role="radiogroup" aria-labelledby="class-picker-label"></div>
+            <p id="class-description" class="screen-message"></p>
+            <button id="start-game" class="btn-primary">Graj</button>
+        </div>
+
+        <div id="main-menu" class="hidden swipe-cards" data-swipe-key="menu" data-swipe-titles="Postać|Statystyki|Akcje" data-swipe-default="1">
+            <section id="main-playerModel" class="swipe-pane" aria-label="Postać gracza">
+                <h2 id="mainNickname" class="hero-name">Gracz</h2>
+                <div class="hero-level"><span>Poziom</span> <strong id="mainLevel">1</strong></div>
+                <div class="hero-portrait">
+                    <img src="res/skins/player_model.png" alt="Postać gracza">
+                </div>
+                <div class="hero-buttons">
+                    <button id="change-playerModel" type="button">👁️ Zmień skina</button>
+                    <button id="achievements-btn" type="button">🏆 Osiągnięcia</button>
+                </div>
+            </section>
+
+            <section id="main-playerSummary" aria-label="Statystyki gracza">
+                <div class="menu-stats-pane swipe-pane">
+                <div class="menu-resources">
+                    <div class="resource-pill">
+                        <span class="pill-icon" aria-hidden="true">💸</span>
+                        <span class="pill-text"><span class="pill-label">Hajs</span><strong id="mainMoney">0 $</strong></span>
+                    </div>
+                    <div class="resource-pill">
+                        <span class="pill-icon" aria-hidden="true">🎨</span>
+                        <span class="pill-text"><span class="pill-label">Punkty skinów</span><strong id="mainSP">0</strong></span>
+                    </div>
+                </div>
+
+                <div class="weapon-card">
+                    <div>
+                        <h3 class="menu-section-title">Aktualna broń</h3>
+                        <strong id="mainWeaponName">Pięści</strong>
+                    </div>
+                    <div class="weapon-nums">
+                        <span class="weapon-num"><span class="stat-icon" data-stat-icon="damage"></span><b id="mainWeaponDmg">0</b> DMG</span>
+                        <span class="weapon-num"><span class="stat-icon" data-stat-icon="ad"></span><b id="mainWeaponAd">0</b> AD</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="menu-section-title">Statystyki</h3>
+                    <div id="main-playerStats" class="stat-grid">
+                        <div class="stat-tile"><span class="stat-icon" data-stat-icon="hp"></span><span class="stat-name">Zdrowie</span><strong id="mainHp">0</strong></div>
+                        <div class="stat-tile"><span class="stat-icon" data-stat-icon="armor"></span><span class="stat-name">Pancerz</span><strong id="mainArmor">0</strong></div>
+                        <div class="stat-tile"><span class="stat-icon" data-stat-icon="crit"></span><span class="stat-name">Szansa na krytyka</span><strong id="mainCrit">0%</strong></div>
+                        <div class="stat-tile"><span class="stat-icon" data-stat-icon="armorPen"></span><span class="stat-name">Penetracja pancerza</span><strong id="mainArmorPen">0</strong></div>
+                        <div class="stat-tile"><span class="stat-icon" data-stat-icon="mana"></span><span class="stat-name">Mana</span><strong id="mainMana">0</strong></div>
+                        <div class="stat-tile"><span class="stat-icon" data-stat-icon="ap"></span><span class="stat-name">Moc umiejętności</span><strong id="mainAp">0</strong></div>
+                    </div>
+                </div>
+                </div>
+
+                <div id="main-buttons" class="swipe-pane">
+                    <button id="play-btn" type="button" class="btn-primary">⚔️ Graj</button>
+                    <button id="arena-btn" type="button" class="hidden">🏟️ Arena</button>
+                    <button id="duel-btn" type="button" class="hidden">🥊 Pojedynki</button>
+                    <button id="shop-btn" type="button">🪙 Sklep</button>
+                    <button id="inventory-btn" type="button">🎒 Ekwipunek</button>
+                    <button id="options-btn" type="button">⚙️ Opcje</button>
+                    <button id="wiki-btn" type="button" data-open-wiki>📖 Wiki</button>
+                </div>
+            </section>
+        </div>
+
+        <section id="shop-screen" class="hidden" aria-live="polite">
+            <div class="shop-header">
+                <div>
+                    <span class="eyebrow">EKWIPUNEK</span>
+                    <h2>Sklep</h2>
+                </div>
+                <div id="shop-money">💸 Hajs: 0 $</div>
+            </div>
+
+            <div class="shop-current-weapon">
+                Aktualna broń: <strong id="shop-current-weapon-value">Pięści</strong>
+            </div>
+
+            <div class="shop-store-layout swipe-cards" data-swipe-key="shop" data-swipe-titles="Filtry|Przedmioty" data-swipe-default="1">
+                <div class="shop-pane swipe-pane">
+                <aside class="shop-filters" aria-label="Kategorie sklepu">
+                    <h3>Filtry</h3>
+                    <button class="shop-filter active" data-category="all" type="button" aria-pressed="true"><span>Wszystkie</span> <span class="shop-filter-count"></span></button>
+                    <button class="shop-filter" data-category="weapons" type="button" aria-pressed="false"><span>Bronie</span> <span class="shop-filter-count"></span></button>
+                    <button class="shop-filter" data-category="ad" type="button" aria-pressed="false" title="AD - przedmioty zwiększające obrażenia fizyczne"><span>Przedmioty AD</span> <span class="shop-filter-slots"></span> <span class="shop-filter-count"></span></button>
+                    <button class="shop-filter" data-category="tank" type="button" aria-pressed="false" title="Tank - przedmioty zwiększające zdrowie i odporności"><span>Tank</span> <span class="shop-filter-slots"></span> <span class="shop-filter-count"></span></button>
+                    <button class="shop-filter" data-category="warrior" type="button" aria-pressed="false" title="Wojownik - przedmioty łączące obrażenia z wytrzymałością"><span>Wojownik</span> <span class="shop-filter-slots"></span> <span class="shop-filter-count"></span></button>
+                    <button class="shop-filter" data-category="magic" type="button" aria-pressed="false" title="AP - przedmioty zwiększające moc umiejętności (magię)"><span>Przedmioty AP</span> <span class="shop-filter-slots"></span> <span class="shop-filter-count"></span></button>
+                    <button class="shop-filter" data-category="potions" type="button" aria-pressed="false"><span>Mikstury</span> <span class="shop-filter-count"></span></button>
+                    <button class="shop-filter" data-category="abilities" type="button" aria-pressed="false"><span>Umiejętności</span> <span class="shop-filter-count"></span></button>
+                </aside>
+
+                <div class="shop-search-row">
+                    <input id="shop-search" type="search" placeholder="Szukaj w sklepie..." aria-label="Szukaj w sklepie" autocomplete="off">
+                    <select id="shop-sort" aria-label="Sortuj">
+                        <option value="default">Domyślnie</option>
+                        <option value="price-asc" selected>Cena: rosnąco</option>
+                        <option value="price-desc">Cena: malejąco</option>
+                        <option value="name">Nazwa A–Z</option>
+                    </select>
+                </div>
+                </div>
+
+                <div class="shop-pane swipe-pane">
+                    <div id="shop-list" class="shop-list"></div>
+                </div>
+
+                <div id="shop-backdrop" class="shop-backdrop"></div>
+
+                <aside id="shop-details" class="shop-details" aria-live="polite">
+                    <div class="shop-details-head">
+                        <div class="shop-details-title">
+                            <h3 id="shop-details-name">Kliknij przedmiot, aby zobaczyć podgląd.</h3>
+                            <p id="shop-details-kind"></p>
+                        </div>
+                        <div id="shop-details-icon-slot" class="shop-details-icon-slot"></div>
+                        <button id="shop-details-close" class="modal-close shop-details-close" type="button" aria-label="Zamknij podgląd">✕</button>
+                    </div>
+                    <div id="shop-details-body" class="shop-details-body"></div>
+                    <div id="shop-actions" class="shop-details-actions"></div>
+                </aside>
+            </div>
+
+            <div id="shop-message" class="shop-message" aria-live="polite">Wybierz przedmiot.</div>
+            <button id="shop-back-btn" class="secondary-button" type="button">Wróć do menu</button>
+        </section>
+
+        <section id="skin-screen" class="hidden" aria-live="polite">
+            <div class="shop-header">
+                <div>
+                    <span class="eyebrow">KOSMETYKA</span>
+                    <h2>Skiny</h2>
+                </div>
+                <div id="skin-points">🎨 SP: 0</div>
+            </div>
+
+            <div class="skin-layout">
+                <aside class="skin-filters">
+                    <h3>Filtry</h3>
+                    <button class="skin-filter hidden" data-rarity="secret" type="button" aria-pressed="false"><span>Secret</span> <span class="skin-filter-count"></span></button>
+                    <button class="skin-filter" data-rarity="ultimate" type="button" aria-pressed="false"><span>Ultimate</span> <span class="skin-filter-count"></span></button>
+                    <button class="skin-filter" data-rarity="legendary" type="button" aria-pressed="false"><span>Legendary</span> <span class="skin-filter-count"></span></button>
+                    <button class="skin-filter" data-rarity="mythic" type="button" aria-pressed="false"><span>Mythic</span> <span class="skin-filter-count"></span></button>
+                    <button class="skin-filter" data-rarity="epic" type="button" aria-pressed="false"><span>Epic</span> <span class="skin-filter-count"></span></button>
+                    <button class="skin-filter" data-rarity="rare" type="button" aria-pressed="false"><span>Rare</span> <span class="skin-filter-count"></span></button>
+                    <button class="skin-filter" data-rarity="basic" type="button" aria-pressed="false"><span>Basic</span> <span class="skin-filter-count"></span></button>
+                </aside>
+
+                <div class="skin-main">
+                    <div class="skin-search-row">
+                        <input id="skin-search" type="search" placeholder="Szukaj skina..." aria-label="Szukaj skina" autocomplete="off">
+                    </div>
+                    <div id="skin-list" class="skin-list"></div>
+                </div>
+
+                <div id="skin-backdrop" class="skin-backdrop"></div>
+
+                <aside id="skin-details" class="skin-details" aria-live="polite">
+                    <button id="skin-details-close" class="modal-close skin-details-close" type="button" aria-label="Zamknij podgląd">✕</button>
+                    <h3 id="skin-details-name">Kliknij skina, aby zobaczyć podgląd.</h3>
+                    <p id="skin-details-rarity"></p>
+                    <div id="skin-variants" class="skin-variants hidden">
+                        <figure>
+                            <img id="skin-alive-preview" src="" alt="Wariant żywy skina">
+                            <figcaption>Wygląd - żywy</figcaption>
+                        </figure>
+                        <figure>
+                            <img id="skin-dead-preview" src="" alt="Wariant martwy skina">
+                            <figcaption>Wygląd - martwy</figcaption>
+                        </figure>
+                    </div>
+                    <div id="skin-actions" class="skin-details-actions"></div>
+                </aside>
+            </div>
+
+            <div id="skin-message" class="shop-message" aria-live="polite">Wybierz skina.</div>
+            <button id="skin-back-btn" class="secondary-button" type="button">Wróć do menu</button>
+        </section>
+
+        <section id="achievements-screen" class="hidden" aria-live="polite">
+            <div class="shop-header">
+                <div>
+                    <span class="eyebrow">ONLINE</span>
+                    <h2>Osiągnięcia</h2>
+                </div>
+                <div id="achievements-summary" class="ach-summary"></div>
+            </div>
+            <p id="achievements-status" class="screen-message" aria-live="polite"></p>
+            <div id="achievements-list"></div>
+            <button id="achievements-back-btn" class="secondary-button" type="button">Wróć do menu</button>
+        </section>
+
+        <section id="inventory-screen" class="hidden" aria-live="polite">
+            <div class="shop-header">
+                <div>
+                    <span class="eyebrow">WYPOSAŻENIE</span>
+                    <h2>Ekwipunek</h2>
+                </div>
+                <div id="inventory-money">💸 Hajs: 0 $</div>
+            </div>
+
+            <div class="inventory-layout swipe-cards" data-swipe-key="inventory" data-swipe-titles="Bronie|Przedmioty" data-swipe-default="1">
+                <div class="swipe-wrap swipe-pane">
+                <article class="inventory-current">
+                    <h3>Aktualna broń</h3>
+                    <div class="inventory-current-card">
+                        <span id="inventory-current-icon" class="inv-current-icon"></span>
+                        <div class="inventory-current-body">
+                            <h4 id="inventory-current-name">Pięści</h4>
+                            <div id="inventory-current-chips" class="stat-chips"></div>
+                            <span id="inventory-current-note">Broń domyślna — niezbywalna</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="inventory-owned">
+                    <h3>Zakupione bronie <span id="inventory-weapon-count" class="slot-counter"></span></h3>
+                    <div id="inventory-weapons" class="shop-items"></div>
+                </article>
+                </div>
+                <article class="inventory-magic swipe-pane">
+                    <h3>Przedmioty</h3>
+                    <div id="inventory-slot-meter" class="slot-meter"></div>
+                    <div class="inv-toolbar">
+                        <input id="inventory-search" type="search" placeholder="Szukaj…" aria-label="Szukaj przedmiotu" autocomplete="off">
+                        <select id="inventory-sort" aria-label="Sortuj przedmioty">
+                            <option value="default">Domyślnie</option>
+                            <option value="price-asc">Wartość: rosnąco</option>
+                            <option value="price-desc">Wartość: malejąco</option>
+                            <option value="name">Nazwa A–Z</option>
+                        </select>
+                    </div>
+                    <div id="inventory-filter" class="inv-filter" role="group" aria-label="Filtr przedmiotów"></div>
+                    <div id="inventory-bulk" class="inv-bulk"></div>
+                    <div id="inventory-magic-items" class="shop-items"></div>
+                </article>
+            </div>
+
+            <div id="inventory-message" class="shop-message" aria-live="polite">Wybierz broń lub przedmiot.</div>
+            <div class="inventory-actions">
+                <button id="inventory-back-btn" class="secondary-button" type="button">Wróć do menu</button>
+            </div>
+
+            <div id="inv-backdrop" class="inv-backdrop"></div>
+            <aside id="inv-details" class="inv-modal" role="dialog" aria-modal="true" aria-labelledby="inv-details-name">
+                <div class="shop-details-head">
+                    <div class="shop-details-title">
+                        <h3 id="inv-details-name"></h3>
+                        <p id="inv-details-kind"></p>
+                    </div>
+                    <div id="inv-details-icon-slot" class="shop-details-icon-slot"></div>
+                    <button id="inv-details-close" class="modal-close inv-modal-close" type="button" aria-label="Zamknij szczegóły">✕</button>
+                </div>
+                <div id="inv-details-body" class="shop-details-body"></div>
+                <div id="inv-details-actions" class="shop-details-actions"></div>
+            </aside>
+        </section>
+
+        <section id="battle-screen" class="hidden" aria-live="polite">
+            <div class="battle-header">
+                <div>
+                    <span class="eyebrow">POJEDYNEK</span>
+                    <h2 id="battle-title">Walka</h2>
+                </div>
+                <div id="battle-wave">Fala 1 / 1</div>
+            </div>
+
+            <div class="battle-arena">
+                <article class="combatant combatant-player">
+                    <span class="combatant-label">TY</span>
+                    <h3 id="battle-player-name">Gracz</h3>
+                    <div class="battle-model battle-model-player">
+                        <img src="res/skins/player_model.png" alt="Postać gracza">
+                    </div>
+                    <div class="battle-resource-bars">
+                        <div>
+                            <span class="resource-label"><span class="stat-icon" data-stat-icon="hp"></span> HP: <strong id="battle-player-hp">100 / 100</strong></span>
+                            <div class="health-bar"><span id="battle-player-health-bar"></span></div>
+                        </div>
+                        <div>
+                            <span class="resource-label"><span class="stat-icon" data-stat-icon="mana"></span> Mana: <strong id="battle-player-mana-value">100 / 100</strong></span>
+                            <div class="health-bar mana-bar"><span id="battle-player-mana-bar"></span></div>
+                        </div>
+                    </div>
+                    <div id="battle-player-stats">
+                        <div id="battle-player-chips" class="stat-chips">
+                            <div id="battle-player-weapon" class="chips-group"></div>
+                            <div id="battle-player-mana" class="chips-group"></div>
+                        </div>
+                    </div>
+                </article>
+
+                <div class="battle-versus">VS</div>
+
+                <article class="combatant combatant-enemy">
+                    <span class="combatant-label">PRZECIWNIK</span>
+                    <h3 id="battle-enemy-name">Przeciwnik</h3>
+                    <div class="battle-model battle-model-enemy">
+                        <img id="battle-enemy-model" src="" alt="Przeciwnik">
+                        <div id="enemy-model-fallback" class="enemy-silhouette hidden" aria-hidden="true">☠</div>
+                    </div>
+                    <div class="stat-line"><span><span class="stat-icon" data-stat-icon="hp"></span> HP</span><strong id="battle-enemy-hp">0 / 0</strong></div>
+                    <div class="health-bar enemy-health-bar"><span id="battle-enemy-health-bar"></span></div>
+                    <div id="battle-enemy-stats" class="stat-chips"></div>
+                </article>
+            </div>
+
+            <div id="battle-log" class="battle-log">Wybierz akcję.</div>
+
+            <div id="battle-actions" class="battle-actions">
+                <button id="attack-btn" type="button">⚔️ Atakuj</button>
+                <button id="escape-btn" type="button">🏃 Uciekaj</button>
+            </div>
+            <div id="battle-dock" class="battle-dock">
+                <div id="battle-abilities" class="battle-abilities"></div>
+                <div id="battle-potions" class="battle-potions"></div>
+            </div>
+            <div id="battle-effects" class="battle-effects">Brak aktywnych efektów.</div>
+            <button id="battle-back-btn" class="secondary-button hidden" type="button">Wróć do menu</button>
+
+            <div id="battle-death-panel" class="battle-death-panel hidden">
+                <h3>☠️ Zginąłeś!</h3>
+                <p>Co chcesz zrobić?</p>
+                <div class="death-actions">
+                    <button id="death-restore-btn" type="button">↩️ Cofnij stan sprzed walki</button>
+                    <button id="death-new-game-btn" type="button">🎮 Nowa gra</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="arena-panel" class="modal hidden" aria-modal="true" role="dialog" aria-labelledby="arena-title">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="arena-title">🏟️ Arena</h2>
+                    <button id="arena-close-btn" class="modal-close" type="button" aria-label="Zamknij">✕</button>
+                </div>
+                <p id="arena-status" class="screen-message"></p>
+                <div id="arena-difficulties">
+                    <button type="button" data-arena-difficulty="easy">
+                        <span class="arena-diff-name">Łatwy (2 fale)</span>
+                        <span class="arena-diff-reward">Możliwy zarobek: około <b data-arena-reward="easy">…</b> $</span>
+                    </button>
+                    <button type="button" data-arena-difficulty="medium">
+                        <span class="arena-diff-name">Średni (3 fale)</span>
+                        <span class="arena-diff-reward">Możliwy zarobek: około <b data-arena-reward="medium">…</b> $</span>
+                    </button>
+                    <button type="button" data-arena-difficulty="hard">
+                        <span class="arena-diff-name">Trudny (4 fale)</span>
+                        <span class="arena-diff-reward">Możliwy zarobek: około <b data-arena-reward="hard">…</b> $</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="options-modal" class="modal hidden" aria-modal="true" role="dialog" aria-labelledby="options-title">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="options-title">Opcje</h2>
+                    <button id="close-options-btn" class="modal-close" type="button" aria-label="Zamknij">✕</button>
+                </div>
+                <div class="opt-tabs" role="tablist" aria-label="Sekcje opcji">
+                    <button id="opt-tab-save" class="opt-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="opt-panel-save" data-opt-tab="save">💾 Zapis</button>
+                    <button id="opt-tab-look" class="opt-tab" type="button" role="tab" aria-selected="false" aria-controls="opt-panel-look" data-opt-tab="look" tabindex="-1">🎨 Wygląd</button>
+                    <button id="opt-tab-combat" class="opt-tab" type="button" role="tab" aria-selected="false" aria-controls="opt-panel-combat" data-opt-tab="combat" tabindex="-1">⚔️ Walka</button>
+                </div>
+
+                <div id="opt-panel-save" class="opt-panel" role="tabpanel" aria-labelledby="opt-tab-save">
+                    <section class="opt-card" aria-labelledby="opt-cloud-title">
+                        <h3 id="opt-cloud-title" class="opt-card-title">☁️ Chmura (Discord)</h3>
+                        <p id="cloud-status" class="screen-message opt-status">Chmura: sprawdzam…</p>
+                        <div class="modal-actions cloud-actions">
+                            <button id="cloud-login-btn" type="button">🔑 Zaloguj</button>
+                            <button id="cloud-save-btn" type="button" disabled>☁️ Zapisz</button>
+                            <button id="cloud-load-btn" type="button" disabled>☁️ Wczytaj</button>
+                            <button id="cloud-delete-btn" type="button" disabled>🗑️ Usuń dane</button>
+                        </div>
+                    </section>
+                    <section class="opt-card" aria-labelledby="opt-code-title">
+                        <h3 id="opt-code-title" class="opt-card-title"><label for="save-code">📋 Kod zapisu</label></h3>
+                        <textarea id="save-code" rows="4" spellcheck="false" placeholder="Tutaj pojawi się kod zapisu..."></textarea>
+                        <div class="modal-actions">
+                            <button id="save-game-btn" type="button">💾 Zapisz grę</button>
+                            <button id="copy-save-btn" type="button">📋 Kopiuj zapis</button>
+                            <button id="load-save-btn" type="button">📥 Wczytaj zapis</button>
+                        </div>
+                        <div class="modal-actions">
+                            <button id="export-file-btn" type="button">📤 Pobierz plik (.low)</button>
+                            <button id="import-file-btn" type="button">📂 Wczytaj z pliku</button>
+                            <input id="import-file-input" type="file" accept=".low,.txt,text/plain" hidden>
+                        </div>
+                    </section>
+                </div>
+
+                <div id="opt-panel-look" class="opt-panel hidden" role="tabpanel" aria-labelledby="opt-tab-look">
+                    <section class="opt-card" aria-labelledby="opt-theme-title">
+                        <h3 id="opt-theme-title" class="opt-card-title">Motyw interfejsu</h3>
+                        <div class="opt-swatches" role="radiogroup" aria-labelledby="opt-theme-title">
+                            <button type="button" class="opt-swatch" role="radio" aria-checked="false" data-theme-id="noc"><span class="opt-swatch-preview" aria-hidden="true"><i></i><i></i><i></i></span><span class="opt-swatch-name">Noc</span><span class="opt-swatch-sub">ciemny</span></button>
+                            <button type="button" class="opt-swatch" role="radio" aria-checked="false" data-theme-id="dzien"><span class="opt-swatch-preview" aria-hidden="true"><i></i><i></i><i></i></span><span class="opt-swatch-name">Dzień</span><span class="opt-swatch-sub">jasny</span></button>
+                            <button type="button" class="opt-swatch" role="radio" aria-checked="false" data-theme-id="kontrast"><span class="opt-swatch-preview" aria-hidden="true"><i></i><i></i><i></i></span><span class="opt-swatch-name">Kontrast</span><span class="opt-swatch-sub">wysoki</span></button>
+                            <button type="button" class="opt-swatch" role="radio" aria-checked="false" data-theme-id="las"><span class="opt-swatch-preview" aria-hidden="true"><i></i><i></i><i></i></span><span class="opt-swatch-name">Las</span><span class="opt-swatch-sub">ciemna zieleń</span></button>
+                        </div>
+                    </section>
+                    <section class="opt-card" aria-labelledby="opt-size-title">
+                        <h3 id="opt-size-title" class="opt-card-title">Rozmiar interfejsu</h3>
+                        <div class="opt-segmented" role="radiogroup" aria-labelledby="opt-size-title">
+                            <button type="button" class="opt-seg" role="radio" aria-checked="false" data-size="16">Mały</button>
+                            <button type="button" class="opt-seg" role="radio" aria-checked="false" data-size="">Domyślny</button>
+                            <button type="button" class="opt-seg" role="radio" aria-checked="false" data-size="20">Duży</button>
+                            <button type="button" class="opt-seg" role="radio" aria-checked="false" data-size="22">Bardzo duży</button>
+                        </div>
+                    </section>
+                    <!-- Selecty pozostają źródłem prawdy dla themes.js; przyciski powyżej tylko nimi sterują. -->
+                    <div class="hidden">
+                        <select id="theme-select" tabindex="-1" aria-hidden="true">
+                            <option value="noc">Noc (ciemny)</option>
+                            <option value="dzien">Dzień (jasny)</option>
+                            <option value="kontrast">Wysoki kontrast</option>
+                            <option value="las">Las (ciemna zieleń)</option>
+                        </select>
+                        <select id="ui-size-select" tabindex="-1" aria-hidden="true">
+                            <option value="">Domyślny</option>
+                            <option value="16">Mały</option>
+                            <option value="20">Duży</option>
+                            <option value="22">Bardzo duży</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="opt-panel-combat" class="opt-panel hidden" role="tabpanel" aria-labelledby="opt-tab-combat">
+                    <section class="opt-card" aria-labelledby="opt-keys-title">
+                        <h3 id="opt-keys-title" class="opt-card-title">⌨️ Sterowanie</h3>
+                        <p class="opt-hint">Kliknij klawisz, a potem naciśnij nowy. <kbd class="opt-kbd">Esc</kbd> anuluje. Jeśli klawisz jest już zajęty, obie akcje zamienią się miejscami.</p>
+                        <div class="opt-key-list">
+                            <div class="opt-key-row"><span class="opt-key-name">Atak <small>(Mag: umiejętność 1)</small></span><button type="button" class="opt-key-btn" data-bind="slot1"></button></div>
+                            <div class="opt-key-row"><span class="opt-key-name">Umiejętność 1 <small>(Mag: umiejętność 2)</small></span><button type="button" class="opt-key-btn" data-bind="slot2"></button></div>
+                            <div class="opt-key-row"><span class="opt-key-name">Umiejętność 2 <small>(Mag: umiejętność 3)</small></span><button type="button" class="opt-key-btn" data-bind="slot3"></button></div>
+                            <div class="opt-key-row"><span class="opt-key-name">Umiejętność 3 <small>(Mag: umiejętność 4)</small></span><button type="button" class="opt-key-btn" data-bind="slot4"></button></div>
+                            <div class="opt-key-row"><span class="opt-key-name">Umiejętność broni</span><button type="button" class="opt-key-btn" data-bind="weapon"></button></div>
+                        </div>
+                        <p id="opt-keys-status" class="opt-hint opt-key-status" role="status" aria-live="polite"></p>
+                        <div class="modal-actions opt-single-action">
+                            <button id="opt-keys-reset-btn" type="button">↩️ Przywróć domyślne klawisze</button>
+                        </div>
+                    </section>
+                    <section class="opt-card" aria-labelledby="opt-auto-title">
+                        <h3 id="opt-auto-title" class="opt-card-title">🤖 Auto-walka</h3>
+                        <div class="opt-key-row"><span class="opt-key-name">Włącz / wyłącz auto-walkę</span><button type="button" class="opt-key-btn" data-bind="auto"></button></div>
+                        <label class="opt-toggle"><input id="opt-auto-no-pause" type="checkbox"><span>Wyłącz zatrzymywanie auto-walki przy niskim HP / manie / braku mikstur</span></label>
+                        <label class="opt-toggle"><input id="opt-auto-potions" type="checkbox"><span>Używaj mikstur</span></label>
+                        <label class="opt-toggle"><input id="opt-auto-keep" type="checkbox"><span>Nie wyłączaj auto-walki po przejściu poziomu</span></label>
+                        <small class="opt-hint opt-sub">Po wygranej gra sama zaczyna kolejny poziom.</small>
+                        <label class="opt-toggle"><input id="opt-auto-restart" type="checkbox"><span>Automatycznie zrestartuj walkę po śmierci</span></label>
+                        <small class="opt-hint opt-sub">Cofa stan sprzed walki i klika „Graj” (działa, gdy auto-walka była włączona).</small>
+                        <div class="opt-range-row" id="opt-auto-delay-row">
+                            <label for="opt-auto-delay">Restart po</label>
+                            <input id="opt-auto-delay" type="range" min="3" max="10" step="1" value="5">
+                            <output id="opt-auto-delay-value" for="opt-auto-delay">5 s</output>
+                        </div>
+                        <div class="modal-actions opt-single-action">
+                            <button id="opt-auto-reset-btn" type="button">↩️ Przywróć domyślne ustawienia auto-walki</button>
+                        </div>
+                    </section>
+                </div>
+
+                <section class="opt-card tut-opt-card" aria-labelledby="opt-tutorial-title">
+                    <h3 id="opt-tutorial-title" class="opt-card-title">🎓 Samouczek</h3>
+                    <p class="tut-opt-text">Nie pamiętasz, jak działa sklep albo walka? Przejdź krótki samouczek jeszcze raz.</p>
+                    <button id="tutorial-start-btn" type="button">🎓 Uruchom samouczek</button>
+                </section>
+
+                <a id="donate-btn" class="opt-donate" href="https://tipply.pl/@szczurek9" target="_blank" rel="noopener noreferrer">💸 Podoba ci się gra? Wesprzyj dalszy rozwój!</a>
+                <p id="options-message" class="screen-message" aria-live="polite"></p>
+            </div>
+        </section>
+
+
+    </div>
+
+    <footer class="site-footer">
+        <span>Copyright © 2026 szczurek9</span>
+        <span> | Port made by: </span>
+        <a href="https://github.com/szczurek9" target="_blank" rel="noopener noreferrer">@szczurek9 &amp; </a><a href="https://github.com/Owcacejk" target="_blank" rel="noopener noreferrer">@Owcacejk</a>
+        <span> | </span>
+        <a href="/privacy">Polityka prywatności</a>
+        <span> | </span>
+        <a href="/terms">Regulamin</a>
+        <span> | </span>
+        <span id="game-version"></span>
+    </footer>
+
+    <script src="script/variables.js"></script>
+    <script src="script/dataLoader.js"></script>
+    <script src="script/icons.js"></script>
+    <script src="script/uiHelpers.js"></script>
+    <script src="script/pullFromHTML.js"></script>
+    <script src="script/saveCodec.js"></script>
+    <script src="script/saveSystem.js"></script>
+    <script src="script/mainMenu.js"></script>
+    <script src="script/cloudSave.js"></script>
+    <script src="script/themes.js"></script>
+    <script src="script/shop.js"></script>
+    <script src="script/inventory.js"></script>
+    <script src="script/skins.js"></script>
+    <script src="script/achievements.js"></script>
+    <script src="script/battleMath.js"></script>
+    <script src="script/battleState.js"></script>
+    <script src="script/battleActions.js"></script>
+    <script src="script/arena.js"></script>
+    <script src="script/battle.js"></script>
+    <script src="script/settings.js"></script>
+    <script src="script/battleUIRender.js"></script>
+    <script src="script/autoBattle.js"></script>
+    <script src="script/battleUI.js"></script>
+    <script src="script/duelEngine.js"></script>
+    <script src="script/duelUI.js"></script>
+    <script src="script/optionsUI.js"></script>
+    <script src="script/mobileCards.js"></script>
+    <script src="script/nickGenerator.js"></script>
+    <script src="script/navGuard.js"></script>
+    <script src="script/tutorial.js"></script>
+</body>
+</html>

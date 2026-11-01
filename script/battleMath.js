@@ -1,0 +1,239 @@
+// Low-level combat math and player/magic-item helpers used throughout the
+// battle system. No battle "state" object lives here — just pure formulas
+// and small helpers that read/write window.player directly.
+(function () {
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const roll = () => Math.floor(Math.random() * 100);
+  const classId = () => window.player.classId || "assassin";
+  const abilitiesForPlayer = () => window.classAbilities?.[classId()]?.active || [];
+
+  const magicEffects = (item) => item.effects
+    || window.magicItems?.find((definition) => definition.id === item.id)?.effects
+    || {};
+
+  const isMagicEquipped = (item) => Boolean(item.equipped
+    || (window.player.equippedMagicItems || []).includes(item.uid)
+    || (window.player.equippedMagicItems || []).includes(item.id));
+
+  function effectiveAbilityPower() {
+    let power = window.player.abilityPower + window.player.adeptBookStacks;
+    const amplifiers = (window.player.magicInventory || [])
+      .filter((item) => magicEffects(item).abilityPowerMultiplier && isMagicEquipped(item));
+    const multiplier = amplifiers.reduce((total, item) => total + Number(magicEffects(item).abilityPowerMultiplier || 0) / 100, 0);
+    power *= 1 + multiplier;
+    return power;
+  }
+
+  function physicalDamage(rawDamage, armor, penetration, penetrationPercent = 0) {
+    const percentReducedArmor = armor * (1 - penetrationPercent / 100);
+    const effectiveArmor = Math.max(0, percentReducedArmor - penetration);
+    const reduction = effectiveArmor / (effectiveArmor + 100);
+    return Math.max(1, Math.floor(rawDamage * (1 - reduction)));
+  }
+
+  function magicDamage(rawDamage, resistance, penetration) {
+    const effectiveResistance = Math.max(0, resistance - penetration);
+    const reduction = effectiveResistance / (effectiveResistance + 100);
+    return Math.max(1, Math.floor(rawDamage * (1 - reduction)));
+  }
+
+  // Mana regen tuning.
+  // - Base regen is 3% of the class's *starting* mana (320 mage / 100 others),
+  //   NOT of max mana, so mana from items only grows the pool, not the regen.
+  // - manaRegenPercent (R) has diminishing returns, like armor: the effective
+  //   bonus is REGEN_MAX_BONUS * R / (R + REGEN_HALF_POINT), see manaRegenBonus().
+  const REGEN_BASE_RATE = 0.03;
+  const REGEN_MAX_BONUS = 3.25;   // asymptote: regen can never exceed base * (1 + 3.25)
+  const REGEN_HALF_POINT = 200;   // raw % at which you get half of REGEN_MAX_BONUS
+
+  function baseManaForClass() {
+    if (classId() === "archer") return 200;
+    return classId() === "mage" ? 320 : 100;
+  }
+
+  // Returns the effective regen multiplier bonus (e.g. 1.25 = +125%).
+  function manaRegenBonus(rawPercent) {
+    const raw = Math.max(0, Number(rawPercent) || 0);
+    return REGEN_MAX_BONUS * raw / (raw + REGEN_HALF_POINT);
+  }
+
+  // Mana restored per turn for a given raw manaRegenPercent (defaults to the player's).
+  function manaRegenAmount(rawPercent = window.player.manaRegenPercent) {
+    return Math.floor(baseManaForClass() * REGEN_BASE_RATE * (1 + manaRegenBonus(rawPercent)));
+  }
+
+  function regenMana() {
+    const player = window.player;
+    const maxMana = Math.max(0, Number(player.maxManaPoints) || 0);
+    const restored = manaRegenAmount(player.manaRegenPercent);
+    player.manaPoints = clamp((Number(player.manaPoints) || 0) + restored, 0, maxMana);
+    return restored;
+  }
+
+  function currentWeaponDamage() {
+    const p = window.player;
+    return Math.max(1, Math.floor((p.weaponBaseDamage || p.weaponDmg || 0) + (p.ad || 0) * (p.weaponAdScaling || 0)));
+  }
+
+  // --- Łucznik ---
+  // Stałe tuningu ataku Q Łucznika (skalowanie broni).
+  const ARCHER_AP_CONVERSION = 0.72;   // ScalingAD x 0,72 = ScalingAP broni
+  const ARCHER_NO_AP_AD_BONUS = 1.16;  // brak przedmiotów AP: ScalingAD x 1,16
+  const ARCHER_AD_SHARE = 0.5;         // + 50% AD do obrażeń (tylko gdy masz przedmioty AP)
+
+  const equippedAdItemList = () => (window.player.adItemInventory || []).filter((item) => item.equipped);
+  const hasEquippedAdItems = () => equippedAdItemList().length > 0;
+  const hasEquippedApItems = () => (window.player.magicInventory || []).some(isMagicEquipped);
+
+  // Obrażenia broni dla ataku Q Łucznika: skalowanie z AD zamieniane na AP
+  // (z dodatkiem 50% AD), a przy braku przedmiotów AP skalowanie z AD rośnie
+  // x1,16 i nie ma dodatku 50% AD.
+  function archerBasicWeaponDamage() {
+    const p = window.player;
+    const base = p.weaponBaseDamage || p.weaponDmg || 0;
+    const scaling = p.weaponAdScaling || 0;
+    const ad = p.ad || 0;
+    const scalingDamage = hasEquippedApItems()
+      ? effectiveAbilityPower() * scaling * ARCHER_AP_CONVERSION + ad * ARCHER_AD_SHARE
+      : ad * scaling * ARCHER_NO_AP_AD_BONUS;
+    return Math.max(1, Math.floor(base + scalingDamage));
+  }
+
+  // Looks up the equipped weapon's own data-file entry (for flat bonuses
+  // like Yamato's accuracy, rather than duplicating them onto the player
+  // object where they'd need manual equip/unequip bookkeeping).
+  function currentWeaponData() {
+    return (window.shopWeapons || []).find((weapon) => weapon.id === window.player.weaponId) || null;
+  }
+
+  function weaponAccuracyBonus() {
+    return Number(currentWeaponData()?.accuracyBonus || 0);
+  }
+
+  function payMana(player, amount) {
+    if (player.manaPoints < amount) return false;
+    player.manaPoints -= amount;
+    return true;
+  }
+
+  function recordSpellCast() {
+    const player = window.player;
+    const hasBook = (player.magicInventory || []).some((item) => magicEffects(item).adeptBook && isMagicEquipped(item));
+    if (hasBook) player.adeptBookStacks = Math.min(player.adeptBookStackLimit, player.adeptBookStacks + (classId() === "mage" ? 5 : 3));
+  }
+
+  // Pasywka Samuraja (jak Eagle Sight u Łucznika): broń biała (Melee) daje +10% obrażeń zwykłego ataku i +5% lifestealu.
+  // Broń hybrydowa (H) i dystansowa (R) bonusu nie daje.
+  const SAMURAI_MELEE_DAMAGE_BONUS = 0.10;
+  const SAMURAI_MELEE_LIFESTEAL = 5;
+  const samuraiMeleeActive = () => classId() === "samurai" && window.player.weaponType === "M";
+  const samuraiMeleeDamageBonus = () => (samuraiMeleeActive() ? SAMURAI_MELEE_DAMAGE_BONUS : 0);
+  const samuraiMeleeLifesteal = () => (samuraiMeleeActive() ? SAMURAI_MELEE_LIFESTEAL : 0);
+
+  // efficiency: mnożnik skuteczności leczenia (Łucznik bez przedmiotów AD leczy
+  // się z magicznego lifestealu z 50% skutecznością).
+  function damageHeal(amount, magic, efficiency = 1) {
+    const player = window.player;
+    const percentage = magic ? player.magicLifesteal : player.lifesteal + (["assassin", "archer"].includes(classId()) ? player.bonusLifesteal : 0) + samuraiMeleeLifesteal();
+    const restored = Math.floor(amount * percentage * efficiency / 100);
+    player.healthPoints = clamp(player.healthPoints + restored, 0, player.maxHealthPoints);
+    return restored;
+  }
+
+  // Applies damage to the current enemy, tracking overkill into the
+  // assassin's overkill pool and handling the on-kill mana/HP refunds.
+  // noOverkill lets a caller opt a specific damage instance out of feeding
+  // the overkill pool (Jhin's stored-pool release is explicitly excluded).
+  function applyDamageToEnemy(state, damage, options = {}) {
+    const dealt = Math.min(damage, state.enemyHealth);
+    const overkill = classId() === "assassin" && !options.noOverkill ? Math.max(0, damage - state.enemyHealth) : 0;
+    if (overkill > 0) window.player.overkillPool += overkill;
+    const nextHealth = state.enemyHealth - dealt;
+
+    if (nextHealth <= 0) {
+      if (classId() === "assassin") {
+        window.player.manaPoints = clamp(window.player.manaPoints + Math.floor(window.player.maxManaPoints * 0.10), 0, window.player.maxManaPoints);
+      }
+      if (window.player.secondWind) {
+        window.player.healthPoints = clamp(window.player.healthPoints + Math.floor(window.player.maxHealthPoints * 0.25), 0, window.player.maxHealthPoints);
+        window.player.manaPoints = clamp(window.player.manaPoints + Math.floor(window.player.maxManaPoints * 0.25), 0, window.player.maxManaPoints);
+      }
+    }
+
+    return {
+      state: { ...state, enemyHealth: nextHealth, enemyDefeated: nextHealth <= 0 },
+      dealt,
+      overkill,
+    };
+  }
+
+  // Redukcja odnowienia umiejętności z założonych przedmiotów (AD i AP).
+  //  - cooldownReduction  (przedmiot AD: pole, AP: w effects) — wszystkie umiejętności z cdReducible !== false
+  //  - rCooldownReduction — tylko umiejętność pod klawiszem R (ostatnia na liście klasy)
+  // Limity dotyczą SUMY z wszystkich założonych przedmiotów.
+  const MAX_COOLDOWN_REDUCTION = 2;     // limit sumy cooldownReduction
+  const MAX_R_COOLDOWN_REDUCTION = 2;   // limit sumy rCooldownReduction
+  const MIN_COOLDOWN = 1;               // żadna umiejętność nie spada poniżej 1 tury
+
+  // add — przedmiot doliczany „na próbę” (podgląd zakupu/założenia); remove — przedmiot pomijany (podgląd zdjęcia).
+  function cooldownReductions({ add = null, remove = null } = {}) {
+    const player = window.player;
+    const items = [
+      ...(player.adItemInventory || []).filter((item) => item && (item.equipped || (player.equippedAdItems || []).includes(item.uid))),
+      ...(player.magicInventory || []).filter((item) => item && isMagicEquipped(item)),
+    ].filter((item) => !remove || item.uid !== remove.uid);
+    if (add) items.push(add);
+    const sum = items.reduce((total, item) => {
+      const fx = magicEffects(item);
+      return {
+        general: total.general + Number(item.cooldownReduction || fx.cooldownReduction || 0),
+        r: total.r + Number(item.rCooldownReduction || fx.rCooldownReduction || 0),
+      };
+    }, { general: 0, r: 0 });
+    return { general: Math.min(MAX_COOLDOWN_REDUCTION, sum.general), r: Math.min(MAX_R_COOLDOWN_REDUCTION, sum.r) };
+  }
+
+  // Umiejętność pod klawiszem R to zawsze ostatnia na liście klasy (tak samo jak w UI).
+  function isRAbility(ability) {
+    const list = abilitiesForPlayer();
+    return list.length > 0 && list[list.length - 1].id === ability.id;
+  }
+
+  // Odnowienie umiejętności po redukcjach (0 = brak odnowienia).
+  function effectiveCooldown(ability) {
+    const base = Number(ability.cooldown || 0);
+    if (!base || ability.cdReducible === false) return base;
+    const reductions = cooldownReductions();
+    const total = reductions.general + (isRAbility(ability) ? reductions.r : 0);
+    return Math.max(MIN_COOLDOWN, base - total);
+  }
+
+  window.BattleMath = {
+    clamp,
+    roll,
+    classId,
+    abilitiesForPlayer,
+    magicEffects,
+    isMagicEquipped,
+    effectiveAbilityPower,
+    physicalDamage,
+    magicDamage,
+    regenMana,
+    manaRegenAmount,
+    manaRegenBonus,
+    currentWeaponDamage,
+    archerBasicWeaponDamage,
+    hasEquippedAdItems,
+    hasEquippedApItems,
+    currentWeaponData,
+    weaponAccuracyBonus,
+    payMana,
+    recordSpellCast,
+    damageHeal,
+    samuraiMeleeDamageBonus,
+    applyDamageToEnemy,
+    cooldownReductions,
+    isRAbility,
+    effectiveCooldown,
+  };
+})();

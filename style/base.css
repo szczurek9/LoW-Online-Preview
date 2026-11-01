@@ -1,0 +1,251 @@
+/* Elementy ukrywane przez logikę ekranów. */
+.hidden {
+    display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Skala interfejsu: WSZYSTKIE rozmiary w CSS są w rem, więc wystarczy zmienić
+   --ui-font-size (domyślnie 18 px; gracz może to zmienić w Opcjach).
+   -------------------------------------------------------------------------- */
+:root {
+    --ui-font-size: 18px;
+    --footer-h: 0px;
+    --radius: 0.5rem;
+    --font-body: "Tagesschrift", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --font-title: "New Rocker", Georgia, "Times New Roman", serif;
+    /* Tło: właściwy obrazek dla rozmiaru ekranu (ścieżki względem tego pliku: style/). */
+    --bg-image: url(../res/img/bg_4k.png);
+}
+
+@media (max-width: 1080px) and (orientation: portrait) {
+    :root { --bg-image: url(../res/img/bg_mobile.png); }
+}
+
+@media (max-width: 760px) and (orientation: portrait) {
+    :root { --bg-image: url(../res/img/bg_mobile_720p.png); }
+}
+
+@media (max-width: 520px) {
+    :root { --ui-font-size: 16.5px; }
+}
+
+@media (max-width: 520px) and (orientation: portrait) {
+    :root { --bg-image: url(../res/img/bg_mobile_560p.png); }
+}
+
+@media (max-width: 380px) {
+    :root { --ui-font-size: 16px; }
+}
+
+html {
+    font-size: var(--ui-font-size);
+    background-color: #12151d;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+/* Zabezpieczenie przed przypadkowym przewijaniem w poziomie na telefonach. */
+html,
+body {
+    overflow-x: hidden;
+}
+
+/* "clip" nie tworzy kontenera przewijania, więc position: sticky (dock z akcjami w walce)
+   działa względem okna. Starsze przeglądarki zostają przy "hidden" z reguły wyżej. */
+body {
+    overflow-x: clip;
+}
+
+/* Podstawowy układ strony: kolumna (zawartość + stopka). */
+body {
+    min-height: 90vh;
+    min-height: 90dvh;
+    margin: 0;
+    padding: 1rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--text-color);
+}
+
+/* Tło jest osobną, stałą warstwą pod całą stroną; przyciemnienie (--scrim) dba o czytelność. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: linear-gradient(var(--scrim), var(--scrim)), var(--bg-image);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+a {
+    color: var(--accent);
+}
+
+/* Główny panel gry. */
+.main {
+    width: min(100%, 72rem);
+    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1.25rem;
+    box-sizing: border-box;
+    background-color: var(--main-background);
+    border: 1px solid var(--shop-border-color);
+    border-radius: 1rem;
+    box-shadow: 0.5rem 0.5rem 0 var(--main-shadow);
+}
+
+#titleheader {
+    margin: 0 0 0.25rem;
+    font-family: var(--font-title);
+    font-weight: 400;
+    font-size: 2.5rem;
+    line-height: 1.1;
+    text-align: center;
+    color: var(--accent);
+    text-shadow: var(--title-shadow);
+}
+
+#titleedition {
+    margin: 0 0 1.25rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+/* --- Przyciski i pola ------------------------------------------------------ */
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+button {
+    min-height: 2.75rem;
+    padding: 0.6rem 0.95rem;
+    box-sizing: border-box;
+    border: 1px solid var(--shop-border-color);
+    border-radius: var(--radius);
+    color: var(--control-text-color);
+    background: var(--shop-control-background);
+    box-shadow: 0 0.125rem 0 rgba(0, 0, 0, 0.35);
+    line-height: 1.2;
+    cursor: pointer;
+    transition: transform 120ms ease, filter 120ms ease, background-color 120ms ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+/* Efekt najechania tylko tam, gdzie jest prawdziwy kursor (na dotyku "przyklejał się"). */
+@media (hover: hover) {
+    button:hover:not(:disabled) {
+        filter: brightness(1.12);
+        transform: translateY(-1px);
+    }
+}
+
+button:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+/* Przycisk główny (Graj, Zagraj jako gość...). */
+button.btn-primary {
+    border-color: var(--accent);
+    color: var(--accent-text);
+    background: var(--accent);
+    font-weight: 700;
+}
+
+input,
+select,
+textarea {
+    min-height: 2.75rem;
+    padding: 0.55rem 0.75rem;
+    box-sizing: border-box;
+    border: 1px solid var(--shop-border-color);
+    border-radius: var(--radius);
+    color: var(--field-text);
+    background: var(--field-bg);
+}
+
+textarea {
+    min-height: 0;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-muted);
+    opacity: 0.85;
+}
+
+label,
+.field-label {
+    font-weight: 700;
+}
+
+/* Wyraźny fokus przy nawigacji klawiaturą. */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+}
+
+/* --- Stopka: zwykły element na końcu strony (nic nie zasłania) --------------- */
+.site-footer {
+    width: min(100%, 72rem);
+    margin-top: 1rem;
+    padding: 0.6rem 0.9rem;
+    box-sizing: border-box;
+    color: var(--text-color);
+    background: var(--main-background);
+    border: 1px solid var(--shop-border-color);
+    border-radius: 0.75rem;
+    text-align: center;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.site-footer a {
+    color: var(--accent);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.site-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Szanujemy ustawienie systemowe ograniczające animacje. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

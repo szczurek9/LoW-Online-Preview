@@ -1,0 +1,375 @@
+/* Ekran logowania (nowa gra). */
+#login-screen {
+    width: 100%;
+    max-width: 46rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1rem;
+    box-sizing: border-box;
+    border: 1px solid var(--shop-border-color);
+    border-radius: 0.75rem;
+    text-align: center;
+    background-color: var(--shop-page-background);
+}
+
+#class-description {
+    width: 100%;
+    margin: 0.125rem 0;
+    padding: 0.6rem 0.75rem;
+    box-sizing: border-box;
+    border-radius: var(--radius);
+    background: var(--shop-info-background);
+}
+
+/* ==========================================================================
+   Menu główne: karta postaci (lewo) + zasoby, broń, statystyki i przyciski (prawo).
+   ========================================================================== */
+#main-menu {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 1rem;
+    align-items: stretch;
+}
+
+#main-playerSummary,
+#main-playerModel {
+    box-sizing: border-box;
+    padding: 1rem;
+    border: 1px solid var(--shop-border-color);
+    border-radius: 0.75rem;
+    background: var(--shop-page-background);
+}
+
+/* --- Karta postaci ---------------------------------------------------------- */
+#main-playerModel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: center;
+}
+
+.hero-name {
+    max-width: 100%;
+    margin: 0;
+    font-family: var(--font-title);
+    font-size: 1.9rem;
+    font-weight: 400;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+    color: var(--accent);
+    text-shadow: var(--title-shadow);
+}
+
+.hero-level {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.2rem 0.9rem;
+    border: 1px solid var(--shop-border-color);
+    border-radius: 999px;
+    background: var(--shop-info-background);
+    color: var(--text-muted);
+}
+
+.hero-level strong {
+    font-size: 1.35rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-color);
+}
+
+.hero-portrait {
+    width: 100%;
+    flex: 1;
+    min-height: 15rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 0.75rem;
+    border: 1px solid var(--border-soft);
+    border-radius: 0.75rem;
+    background: var(--sprite-bg);
+}
+
+.hero-portrait img {
+    width: auto;
+    max-width: 100%;
+    height: 20rem;
+    object-fit: contain;
+}
+
+#main-playerModel button {
+    width: 100%;
+}
+
+/* --- Prawa kolumna ---------------------------------------------------------- */
+#main-playerSummary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    text-align: left;
+}
+
+.menu-section-title {
+    margin: 0 0 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+/* Zasoby: hajs i punkty skinów. */
+.menu-resources {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+}
+
+.resource-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-width: 0;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--shop-border-color);
+    border-radius: 0.65rem;
+    background: var(--shop-info-background);
+}
+
+.pill-icon {
+    font-size: 1.7rem;
+    line-height: 1;
+}
+
+.pill-text {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.pill-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.pill-text strong {
+    font-size: 1.4rem;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+/* Broń. */
+.weapon-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--shop-border-color);
+    border-left: 0.4rem solid var(--accent);
+    border-radius: 0.65rem;
+    background: var(--shop-card-background);
+}
+
+.weapon-card .menu-section-title {
+    margin-bottom: 0.1rem;
+}
+
+#mainWeaponName {
+    font-size: 1.3rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.weapon-nums {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.1rem;
+}
+
+.weapon-num {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 1.1rem;
+}
+
+.weapon-num b {
+    font-variant-numeric: tabular-nums;
+}
+
+.weapon-num .stat-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+/* Statystyki: kafelki z ikoną, nazwą i wartością. */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+.stat-tile {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--border-soft);
+    border-radius: 0.65rem;
+    background: var(--shop-card-background);
+}
+
+.stat-tile .stat-icon {
+    width: 2rem;
+    height: 2rem;
+}
+
+.stat-tile .game-icon-glyph {
+    font-size: 1.4rem;
+}
+
+.stat-tile .game-icon-glyph.is-text {
+    font-size: 0.95rem;
+}
+
+.stat-name {
+    font-size: 0.95rem;
+    line-height: 1.15;
+    color: var(--text-muted);
+}
+
+.stat-tile strong {
+    font-size: 1.3rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Przyciski nawigacji. */
+#main-buttons {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+}
+
+#main-buttons button {
+    min-height: 3.25rem;
+    font-size: 1.1rem;
+}
+
+/* Graj zajmuje cały rząd, chyba że widoczna jest Arena (wtedy stoją obok siebie). */
+#main-buttons #play-btn {
+    grid-column: 1 / -1;
+    min-height: 3.9rem;
+    font-size: 1.4rem;
+}
+
+#main-buttons:has(#arena-btn:not(.hidden)) #play-btn {
+    grid-column: auto;
+}
+
+/* Nieparzysta liczba przycisków w ostatnim rzędzie: ostatni (Wiki) zajmuje cały rząd, żeby nie było dziury. */
+#main-buttons button.is-wide {
+    grid-column: 1 / -1;
+}
+
+/* --- Arena ---------------------------------------------------------------- */
+#arena-difficulties {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+#arena-difficulties button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+    padding: 0.7rem;
+}
+
+.arena-diff-name {
+    font-weight: 700;
+}
+
+.arena-diff-reward {
+    font-size: 0.9rem;
+}
+
+/* --- Telefon ---------------------------------------------------------------- */
+@media (max-width: 760px) {
+    #main-menu {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hero-portrait {
+        min-height: 11rem;
+    }
+
+    .hero-portrait img {
+        height: 12rem;
+    }
+}
+
+@media (max-width: 430px) {
+    .pill-icon {
+        font-size: 1.4rem;
+    }
+
+    .pill-text strong {
+        font-size: 1.2rem;
+    }
+
+    /* Kompaktowe kafelki: ikona + wartość w jednym wierszu, nazwa pod spodem. */
+    .stat-tile {
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-areas:
+            "icon value"
+            "name name";
+        gap: 0.2rem 0.5rem;
+        padding: 0.5rem 0.6rem;
+    }
+
+    .stat-tile .stat-icon {
+        grid-area: icon;
+    }
+
+    .stat-tile strong {
+        grid-area: value;
+        text-align: right;
+    }
+
+    .stat-name {
+        grid-area: name;
+        font-size: 0.85rem;
+    }
+
+    #main-buttons button {
+        font-size: 1rem;
+    }
+}
+
+/* Pole nicku + przycisk losowania. */
+.nick-row {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.nick-row #nickname {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.nick-random {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
