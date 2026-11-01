@@ -567,6 +567,16 @@
         <span id="game-version"></span>
     </footer>
 
+    <section id="preview-notice" class="modal preview-notice hidden" aria-modal="true" role="dialog" aria-labelledby="preview-notice-title" aria-describedby="preview-notice-text">
+        <div class="modal-content preview-notice-content">
+            <div class="preview-notice-badge" aria-hidden="true">⚠️</div>
+            <h2 id="preview-notice-title">Wersja Preview</h2>
+            <p id="preview-notice-text">Grasz w wersję <strong>Preview</strong> gry. Mogą występować różne błędy, a część elementów interfejsu — np. ikony czy grafiki — może jeszcze brakować lub wyglądać inaczej niż w wersji finalnej.</p>
+            <p class="preview-notice-hint">Jeśli trafisz na jakiś błąd, daj znać na naszym <a href="https://discord.gg/CYDWgR5Z2H" target="_blank" rel="noopener noreferrer">Discordzie</a>. Dzięki za pomoc w testowaniu! 🙌</p>
+            <button id="preview-notice-ok" type="button" class="btn-primary">Rozumiem, graj!</button>
+        </div>
+    </section>
+
     <script src="script/variables.js"></script>
     <script src="script/dataLoader.js"></script>
     <script src="script/icons.js"></script>
@@ -597,5 +607,6 @@
     <script src="script/nickGenerator.js"></script>
     <script src="script/navGuard.js"></script>
     <script src="script/tutorial.js"></script>
+    <script src="script/previewNotice.js"></script>
 </body>
 </html>

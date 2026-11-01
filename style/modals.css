@@ -471,3 +471,38 @@
         margin-left: 0;
     }
 }
+
+/* Komunikat o wersji Preview (pokazywany po wejściu na stronę). */
+.preview-notice {
+    z-index: 2200;
+}
+
+.preview-notice-content {
+    width: min(100%, 28rem);
+    text-align: center;
+}
+
+.preview-notice-content h2 {
+    margin: 0.25rem 0 0.5rem;
+    font-family: var(--font-title);
+    font-weight: 400;
+}
+
+.preview-notice-badge {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.preview-notice-content p {
+    margin: 0.5rem 0;
+}
+
+.preview-notice-hint {
+    color: var(--text-muted);
+    font-size: 0.9em;
+}
+
+.preview-notice-content button {
+    width: 100%;
+    margin-top: 0.75rem;
+}
