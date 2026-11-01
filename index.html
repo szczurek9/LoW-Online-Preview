@@ -573,7 +573,21 @@
             <h2 id="preview-notice-title">Wersja Preview</h2>
             <p id="preview-notice-text">Grasz w wersję <strong>Preview</strong> gry. Mogą występować różne błędy, a część elementów interfejsu — np. ikony czy grafiki — może jeszcze brakować lub wyglądać inaczej niż w wersji finalnej.</p>
             <p class="preview-notice-hint">Jeśli trafisz na jakiś błąd, daj znać na naszym <a href="https://discord.gg/CYDWgR5Z2H" target="_blank" rel="noopener noreferrer">Discordzie</a>. Dzięki za pomoc w testowaniu! 🙌</p>
-            <button id="preview-notice-ok" type="button" class="btn-primary">Rozumiem, graj!</button>
+            <div class="preview-notice-actions">
+                <button id="preview-notice-details-btn" type="button">📋 Co jest w Preview?</button>
+                <button id="preview-notice-ok" type="button" class="btn-primary">Rozumiem, graj!</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="preview-details" class="modal preview-notice hidden" aria-modal="true" role="dialog" aria-labelledby="preview-details-title">
+        <div class="modal-content preview-details-content">
+            <div class="modal-header">
+                <h2 id="preview-details-title">Co jest w Preview?</h2>
+                <button id="preview-details-close" class="modal-close" type="button" aria-label="Zamknij">✕</button>
+            </div>
+            <div id="preview-details-body" class="preview-details-body" aria-live="polite">Ładowanie...</div>
+            <button id="preview-details-back" type="button" class="btn-primary">Wróć</button>
         </div>
     </section>
 
